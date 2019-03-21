@@ -1,0 +1,69 @@
+{
+  "name": "dr_queue",
+  "version": "0.0.1",
+  "description": "This is Dr. Queue - A REST interface and Redis Queue manager packaged with koa2 to observe and handle queues",
+  "main": "out/server.js",
+  "scripts": {
+    "clean": "rm -rf out/*",
+    "start": "npm run clean && npm run build && node --trace-warnings out/server.js",
+    "build": "bin/build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reduxdj/dr_queue.git"
+  },
+  "author": "queue redis",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/reduxdj/dr_queue/issues"
+  },
+  "homepage": "https:/github.com/reduxdj/dr_queue/#readme",
+  "dependencies": {
+    "chai": "^4.2.0",
+    "dotenv": "^6.1.0",
+    "koa": "^2.7.0",
+    "koa-cookie": "^1.0.0",
+    "koa-cors": "0.0.16",
+    "koa-logger-winston": "0.0.2",
+    "lodash": "^4.17.10",
+    "microseconds": "^0.1.0",
+    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.23",
+    "redis": "^2.8.0",
+    "supertest": "^4.0.2",
+    "the-best-winston-sentry": "0.0.5",
+    "winston": "^3.1.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/node": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/plugin-proposal-decorators": "^7.1.2",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0",
+    "@babel/plugin-proposal-export-namespace-from": "^7.0.0",
+    "@babel/plugin-proposal-function-sent": "^7.1.0",
+    "@babel/plugin-proposal-numeric-separator": "^7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/plugin-proposal-pipeline-operator": "^7.0.0",
+    "@babel/plugin-proposal-throw-expressions": "^7.0.0",
+    "@babel/plugin-syntax-export-extensions": "^7.0.0-beta.32",
+    "@babel/plugin-transform-shorthand-properties": "^7.0.0",
+    "@babel/preset-env": "^7.1.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.6.0",
+    "eslint": "^5.8.0",
+    "eslint-config-google": "^0.9.1",
+    "eslint-plugin-import": "^2.13.0",
+    "jest": "^23.6.0"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "bracketSpacing": false,
+    "arrowParens": "always",
+    "semi": false,
+    "printWidth": 110
+  },
+  "keywords": []
+}

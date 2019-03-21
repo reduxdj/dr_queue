@@ -1,0 +1,5 @@
+#!/bin/bash
+
+mv babelrc .babelrc
+babel src -d out
+mv .babelrc babelrc
