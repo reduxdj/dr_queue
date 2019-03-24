@@ -5,7 +5,7 @@
   "main": "out/server.js",
   "scripts": {
     "clean": "rm -rf out/*",
-    "start": "npm run clean && npm run build && node --trace-warnings out/server.js",
+    "start": "npm run clean && npm run build && HOSTNAME='localhost' && HOST_IP='127.0.0.1' && node --trace-warnings out/server.js",
     "build": "bin/build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -21,6 +21,8 @@
   "homepage": "https:/github.com/reduxdj/dr_queue/#readme",
   "dependencies": {
     "chai": "^4.2.0",
+    "chalk": "^2.4.2",
+    "config": "^3.0.1",
     "dotenv": "^6.1.0",
     "koa": "^2.7.0",
     "koa-cookie": "^1.0.0",
@@ -32,8 +34,7 @@
     "moment-timezone": "^0.5.23",
     "redis": "^2.8.0",
     "supertest": "^4.0.2",
-    "the-best-winston-sentry": "0.0.5",
-    "winston": "^3.1.0"
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.2",

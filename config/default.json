@@ -1,0 +1,13 @@
+{
+  "db": {
+    "redis": {
+      "host": "localhost",
+      "port": "6379"
+    }
+  },
+  "env": {
+    "hostIp" : "HOST_IP",
+    "appName": "queue-logger",
+    "port": "8000"
+  }
+}
