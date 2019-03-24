@@ -28,6 +28,6 @@
     "useWebsockets": true
   },
   "credentials" : {
-    "token" : "go"
+    "token" : "Go"
   }
 }

@@ -34,7 +34,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 const DB_CONSTANTS = {
   LEFT: 0,
-  RIGHTL: 1
+  RIGHT: 1
 };
 
 function getJsonString(data) {
@@ -112,7 +112,6 @@ function pushLeft(_x5, _x6) {
 function _pushLeft() {
   _pushLeft = _asyncToGenerator(function* (queueName, item) {
     let direction = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : DB_CONSTANTS.LEFT;
-    //console.log(new Date(), { f: 'pushLeft', item, direction })
     return push(queueName, item, direction);
   });
   return _pushLeft.apply(this, arguments);
@@ -125,7 +124,6 @@ function pushRight(_x7, _x8) {
 function _pushRight() {
   _pushRight = _asyncToGenerator(function* (queueName, item) {
     let direction = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : DB_CONSTANTS.RIGHT;
-    //console.log(new Date(), { f: 'pushRight', item, direction })
     return push(queueName, item, direction);
   });
   return _pushRight.apply(this, arguments);
@@ -137,7 +135,6 @@ function hasNext(_x9) {
 
 function _hasNext() {
   _hasNext = _asyncToGenerator(function* (queueName) {
-    //console.log(new Date(), { f: 'hasNext', queueName })
     return new Promise(resolve => _server.dbs.client.lrange(queueName, -1, -1,
     /*#__PURE__*/
     function () {
@@ -159,8 +156,7 @@ function range(_x10, _x11, _x12) {
 
 function _range() {
   _range = _asyncToGenerator(function* (queueName, start, stop) {
-    // console.log(new Date(), { f: 'range', queueName,  start, stop })
-    return new Promise(resolve => _server.dbs.client.lrange(queueName, start, stop, (err, data) => resolve(data.filter(item => item.match(/\{"/g)).map(JSON.parse))));
+    return new Promise(resolve => _server.dbs.client.lrange(queueName, start, stop, (err, data) => resolve((data && Array.isArray(data) ? data : []).filter(item => item.match(/\{"/g)).map(JSON.parse))));
   });
   return _range.apply(this, arguments);
 }
@@ -172,7 +168,6 @@ function lastOne(_x13) {
 function _lastOne() {
   _lastOne = _asyncToGenerator(function* (queueName) {
     let count = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-    //console.log(new Date(), { f: 'last', queueName })
     return _lodash.default.get((yield range(queueName, 0, count - 1)), '[0]');
   });
   return _lastOne.apply(this, arguments);
@@ -185,7 +180,6 @@ function firstOne(_x14) {
 function _firstOne() {
   _firstOne = _asyncToGenerator(function* (queueName) {
     let count = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-    //console.log(new Date(), { f: 'first', queueName })
     return _lodash.default.get((yield range(queueName, count * -1, -1)).reverse(), '[0]');
   });
   return _firstOne.apply(this, arguments);
@@ -197,7 +191,6 @@ function length(_x15) {
 
 function _length() {
   _length = _asyncToGenerator(function* (queueName) {
-    //console.log(new Date(), { f: 'length', queueName })
     return new Promise(resolve => _server.dbs.client.llen(queueName, (err, data) => resolve(data))).catch(_server.log);
   });
   return _length.apply(this, arguments);
@@ -209,7 +202,6 @@ function reset(_x16) {
 
 function _reset() {
   _reset = _asyncToGenerator(function* (queueName) {
-    //console.log(new Date(), { f: 'reset', queueName })
     return new Promise(resolve => _server.dbs.client.del(queueName, 0, -1, (err, data) => resolve(data))).catch(_server.log);
   });
   return _reset.apply(this, arguments);
@@ -222,7 +214,6 @@ function last(_x17) {
 function _last() {
   _last = _asyncToGenerator(function* (queueName) {
     let count = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-    //console.log(new Date(), { f: 'last', queueName })
     return yield range(queueName, 0, count - 1);
   });
   return _last.apply(this, arguments);
@@ -239,7 +230,6 @@ function first(_x18) {
 function _first() {
   _first = _asyncToGenerator(function* (queueName) {
     let count = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-    //console.log(new Date(), { f: 'first', queueName })
     return (yield range(queueName, count * -1, -1)).reverse();
   });
   return _first.apply(this, arguments);
@@ -252,7 +242,6 @@ function pause() {
 function _pause() {
   _pause = _asyncToGenerator(function* () {
     let mins = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-    //console.log(new Date(), { f: 'pause', mins })
     return new Promise(resolve => {
       const timeout = setTimeout(() => {
         return resolve(timeout);
@@ -269,7 +258,6 @@ function delay() {
 function _delay() {
   _delay = _asyncToGenerator(function* () {
     let secs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-    //console.log(new Date(), { f: 'delay', secs })
     return new Promise(resolve => {
       const timeout = setTimeout(() => {
         return resolve(timeout);
@@ -285,7 +273,6 @@ function clearDelay(_x19) {
 
 function _clearDelay() {
   _clearDelay = _asyncToGenerator(function* (timeout) {
-    //console.log(new Date(), { f: 'clearDelay', secs })
     Promise.resolve(() => clearTimeout(timeout)); //eslint-disable-line
   });
   return _clearDelay.apply(this, arguments);

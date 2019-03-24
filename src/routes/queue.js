@@ -1,5 +1,4 @@
 import Router from 'koa-router'
-
 import {
   push,
   first,
@@ -103,7 +102,9 @@ router.get('/:queueName/first',
 (ctx, next) => rolesRequired(ctx, next, 'admin', 'api'), async (ctx) => {
   try {
     ctx.body = { ok: true,
-      data: await hasNext(ctx.params.queueName) ? await first(ctx.params.queueName) : Promise.resolve({})
+      data: await hasNext(ctx.params.queueName)
+      ? await first(ctx.params.queueName)
+      : Promise.resolve({})
     }
   } catch (err) {
     Logger.error(err)

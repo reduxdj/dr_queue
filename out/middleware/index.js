@@ -7,7 +7,7 @@ exports.default = rolesRequired;
 
 var _config = _interopRequireDefault(require("config"));
 
-var _server = _interopRequireDefault(require("../server"));
+var _server = require("../server");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -39,25 +39,22 @@ function _rolesRequired() {
   _rolesRequired = _asyncToGenerator(function* (ctx, next) {
     try {
       const userToken = getToken(ctx);
-      if (!token) ctx.throw(401);
+      if (!userToken) ctx.throw(401);
 
       if (userToken !== token) {
         ctx.user = {
           token: token
         };
-        return next();
-      }
+        ctx.throw(403, 'You are not Authorized');
+      } // example roles logic
+      // const roles = ['admin', 'api'] //this should be coming from a user API - just for example
+      // const foundRole = args.some(arg => roles.find(role => role === arg))
+      // foundRole ? next() : ctx.throw(403, 'You are not Authorized')
 
-      const roles = ['admin', 'api']; //this should be coming from a user API - just for example
 
-      for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-        args[_key - 2] = arguments[_key];
-      }
-
-      const foundRole = args.some(arg => roles.find(role => role === arg));
-      return foundRole ? next() : ctx.throw(403, 'You are not Authorized');
+      return next();
     } catch (err) {
-      _server.default.error(err);
+      _server.Logger.error(err);
 
       ctx.throw(403, 'You are not Authorized');
     }

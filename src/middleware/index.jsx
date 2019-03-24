@@ -1,5 +1,5 @@
 import config from 'config'
-import Logger from '../server'
+import {Logger} from '../server'
 
 const {token} = config.get('credentials')
 
@@ -16,15 +16,17 @@ function getToken({ request: { header }, query: { token }} ) {
 export default async function rolesRequired(ctx, next, ...args) {
   try {
     const userToken = getToken(ctx)
-    if (!token)
+    if (!userToken)
       ctx.throw(401)
     if (userToken !== token) {
       ctx.user = { token }
-      return next()
+      ctx.throw(403, 'You are not Authorized')
     }
-    const roles = ['admin', 'api'] //this should be coming from a user API - just for example
-    const foundRole = args.some(arg => roles.find(role => role === arg))
-    return foundRole ? next() : ctx.throw(403, 'You are not Authorized')
+    // example roles logic
+    // const roles = ['admin', 'api'] //this should be coming from a user API - just for example
+    // const foundRole = args.some(arg => roles.find(role => role === arg))
+    // foundRole ? next() : ctx.throw(403, 'You are not Authorized')
+    return next()
   } catch (err) {
     Logger.error(err)
     ctx.throw(403, 'You are not Authorized')
