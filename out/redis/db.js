@@ -198,7 +198,7 @@ function length(_x15) {
 function _length() {
   _length = _asyncToGenerator(function* (queueName) {
     //console.log(new Date(), { f: 'length', queueName })
-    return new Promise(resolve => _server.dbs.redisPublisher.llen(queueName, (err, data) => resolve(data))).catch(_server.log);
+    return new Promise(resolve => _server.dbs.client.llen(queueName, (err, data) => resolve(data))).catch(_server.log);
   });
   return _length.apply(this, arguments);
 }
@@ -210,7 +210,7 @@ function reset(_x16) {
 function _reset() {
   _reset = _asyncToGenerator(function* (queueName) {
     //console.log(new Date(), { f: 'reset', queueName })
-    return new Promise(resolve => _server.dbs.redisPublisher.del(queueName, 0, -1, (err, data) => resolve(data))).catch(_server.log);
+    return new Promise(resolve => _server.dbs.client.del(queueName, 0, -1, (err, data) => resolve(data))).catch(_server.log);
   });
   return _reset.apply(this, arguments);
 }

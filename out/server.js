@@ -24,6 +24,8 @@ var _koaWebsocket = _interopRequireDefault(require("koa-websocket"));
 
 var _moment = _interopRequireDefault(require("moment"));
 
+var _koaBodyparser = _interopRequireDefault(require("koa-bodyparser"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -130,7 +132,7 @@ function () {
   return function (_x, _x2) {
     return _ref.apply(this, arguments);
   };
-}()).use(router.allowedMethods());
+}()).use((0, _koaBodyparser.default)()).use(router.allowedMethods());
 (0, _routes.default)(app);
 app.listen(port, () => Logger.log("\u2705 The server is running at ".concat(protocol, "://").concat(hostIp, ":").concat(port, "/")));
 start();

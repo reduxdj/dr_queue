@@ -95,7 +95,7 @@ export async function firstOne(queueName, count = 1) {
 export async function length(queueName) {
   //console.log(new Date(), { f: 'length', queueName })
   return new Promise(resolve =>
-    dbs.redisPublisher.llen(queueName, (err, data) =>
+    dbs.client.llen(queueName, (err, data) =>
       resolve(data)
     )).catch(log)
 }
@@ -103,7 +103,7 @@ export async function length(queueName) {
 export async function reset(queueName) {
   //console.log(new Date(), { f: 'reset', queueName })
   return new Promise(resolve =>
-    dbs.redisPublisher.del(queueName, 0, -1, (err, data) =>
+    dbs.client.del(queueName, 0, -1, (err, data) =>
       resolve(data)
     )).catch(log)
 }

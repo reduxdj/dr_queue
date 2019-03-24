@@ -7,9 +7,9 @@ import Router from 'koa-router'
 import routing from './routes'
 import websockify from 'koa-websocket'
 import moment from 'moment'
+import bodyParser from 'koa-bodyparser'
 
 export const upTime = moment().format('MMMM Do YYYY, h:mm:ss a')
-
 const router = new Router()
 const {redis} = config.get('db')
 const {appName, timezone, hostIp} = config.get('env')
@@ -66,6 +66,7 @@ const app = (useWebsockets
     Logger.log(`${ctx.method} ${ctx.path}`, {path: ctx.request.path, requestIp: ctx.request.ip, method: ctx.method, params: ctx.params })
     return next()
   })
+  .use(bodyParser())
   .use(router.allowedMethods())
 routing(app)
   app.listen(port, () => Logger.log(`✅ The server is running at ${protocol}://${hostIp}:${port}/`))
