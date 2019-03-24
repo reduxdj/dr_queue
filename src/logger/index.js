@@ -12,8 +12,7 @@ const COLORS = {
   whiteBright: 'whiteBright'
 }
 
-
-let alignColorsAndTime = winston.format.combine(
+const alignColorsAndTime = winston.format.combine(
     winston.format.colorize({
       all:true
     }),
@@ -22,14 +21,14 @@ let alignColorsAndTime = winston.format.combine(
     }),
     /*eslint-disable */
     winston.format.printf(
-      ({metadata, env, label, level, hostIp, hostname, appName, timestamp, message}, ...info) =>
-        ` ${env}:${chalk[COLORS.gray](hostname)}:${appName}:${hostIp}:${level} GMT: ${chalk[COLORS.magentaBright](moment(timestamp))} US/PDX: ${chalk[COLORS.yellowBright](moment(info.timestamp).tz('America/Los_Angeles').format('hh:mm a'))} ${chalk[COLORS.whiteBright](message)} ${JSON.stringify({env, hostIp, appName, timestamp, env, ...metadata})}`
+      ({metadata, env, label, level, hostIp, hostname, appName, timestamp, message, timezone}, ...info) =>
+        ` ${env}:${chalk[COLORS.gray](hostname)}:${appName}:${hostIp}:${level} UTC: ${chalk[COLORS.magentaBright](moment(timestamp))} ${timezone}: ${chalk[COLORS.yellowBright](moment(info.timestamp).tz(timezone).format('hh:mm a'))} ${chalk[COLORS.whiteBright](message)} ${JSON.stringify({env, hostIp, appName, timestamp, env, ...metadata})}`
     )
     /*eslint-enable */
 )
 
 export const logger = winston.createLogger({
-  level: "debug",
+  level: "info",
   transports: [
     new winston.transports.File({ filename: 'error.log', level: 'error' }),
     new winston.transports.File({ filename: 'combined.log' }),

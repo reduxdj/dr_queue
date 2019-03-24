@@ -11,7 +11,7 @@ module.exports = {
     'require-jsdoc': 'off',
     'comma-dangle': 'off',
     semi: ['error', 'never'],
-    'max-len': ['error', {code: 110, comments: 80}],
+    'max-len': ['error', {code: 210, comments: 80}],
     'no-undef': 'error',
     'no-console': 1,
     curly: ['error', 'multi', 'consistent']

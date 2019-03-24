@@ -6,7 +6,6 @@ import app from '../src/server'
 const request = supertest.agent(app.listen())
 const QUEUE_NAME = 'test'
 
-
 should()
 
 describe('E2E Tests for Queue', () => {

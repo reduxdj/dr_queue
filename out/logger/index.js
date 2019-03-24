@@ -27,7 +27,7 @@ const COLORS = {
   whiteBright: 'whiteBright'
 };
 
-let alignColorsAndTime = _winston.default.format.combine(_winston.default.format.colorize({
+const alignColorsAndTime = _winston.default.format.combine(_winston.default.format.colorize({
   all: true
 }), _winston.default.format.label({
   label: 'console-logger'
@@ -42,13 +42,14 @@ _winston.default.format.printf(function (_ref) {
       hostname = _ref.hostname,
       appName = _ref.appName,
       timestamp = _ref.timestamp,
-      message = _ref.message;
+      message = _ref.message,
+      timezone = _ref.timezone;
 
   for (var _len = arguments.length, info = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
     info[_key - 1] = arguments[_key];
   }
 
-  return " ".concat(env, ":").concat(_chalk.default[COLORS.gray](hostname), ":").concat(appName, ":").concat(hostIp, ":").concat(level, " GMT: ").concat(_chalk.default[COLORS.magentaBright]((0, _momentTimezone.default)(timestamp)), " US/PDX: ").concat(_chalk.default[COLORS.yellowBright]((0, _momentTimezone.default)(info.timestamp).tz('America/Los_Angeles').format('hh:mm a')), " ").concat(_chalk.default[COLORS.whiteBright](message), " ").concat(JSON.stringify(_objectSpread({
+  return " ".concat(env, ":").concat(_chalk.default[COLORS.gray](hostname), ":").concat(appName, ":").concat(hostIp, ":").concat(level, " UTC: ").concat(_chalk.default[COLORS.magentaBright]((0, _momentTimezone.default)(timestamp)), " ").concat(timezone, ": ").concat(_chalk.default[COLORS.yellowBright]((0, _momentTimezone.default)(info.timestamp).tz(timezone).format('hh:mm a')), " ").concat(_chalk.default[COLORS.whiteBright](message), " ").concat(JSON.stringify(_objectSpread({
     env: env,
     hostIp: hostIp,
     appName: appName,
@@ -60,7 +61,7 @@ _winston.default.format.printf(function (_ref) {
 );
 
 const logger = _winston.default.createLogger({
-  level: "debug",
+  level: "info",
   transports: [new _winston.default.transports.File({
     filename: 'error.log',
     level: 'error'

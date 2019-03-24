@@ -1,13 +1,33 @@
 {
   "db": {
-    "redis": {
+    "redis":[
+      {
+      "name": "client",
       "host": "localhost",
       "port": "6379"
-    }
+    },{
+      "name": "subscriber",
+      "host": "localhost",
+      "port": "6379"
+    },{
+      "name": "publisher",
+      "host": "localhost",
+      "port": "6379"
+    }]
+  },
+  "webserver": {
+    "port" : "port",
+    "hostname": "localhost",
+    "protocol" : "http",
+    "port": "8000"
   },
   "env": {
-    "hostIp" : "HOST_IP",
-    "appName": "queue-logger",
-    "port": "8000"
+    "hostIp" : "127.0.0.1",
+    "appName": "queue",
+    "timezone": "America/Los_Angeles",
+    "useWebsockets": true
+  },
+  "credentials" : {
+    "token" : "go"
   }
 }
