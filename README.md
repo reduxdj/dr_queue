@@ -10,21 +10,25 @@ Lists are dynamic, just like Redis, to create a list, POST a JSON body into the 
 
 Queues, are assumed to originate from left to right.
 
-###Why?
+### Why?
 Reasoning about queues is not easy, especially because we think of them like arrays, but Redis can make this a little confusing,
 especially with its indices in its commands.
 
-###Documentation
+### Documentation
 Just like REST interfaces, GET requests are non-destructive read operations of the queue,
 while POST commands mutate the list, either appending to it, removing an item,
 or resetting (removing the entire list.)
 
-[Logging](https://github.com/redux_dj/dr_queue/LOGGING.md)
-[Authentication](https://github.com/redux_dj/dr_queue/AUTHENTICATION.md)
-[Examples](https://github.com/redux_dj/dr_queue/EXAMPLES.md)
-[Roadmap](https://github.com/redux_dj/dr_queue/ROADMAP.md)
+[Logging](https://github.com/reduxdj/dr_queue/blob/master/LOGGING.md)
 
-###Getting Started
+[Authentication](https://github.com/reduxdj/dr_queue/blob/master/AUTHENTICATION.md)
+
+[Examples](https://github.com/reduxdj/dr_queue/blob/master/EXAMPLES.md)
+
+[Roadmap](https://github.com/reduxdj/dr_queue/blob/master/ROADMAP.md)
+
+
+### Getting Started
 
 To build app:
 ```
@@ -32,12 +36,12 @@ npm install
 npm run build
 ```
 
-##To Start Dr Queue:
+## To Start Dr Queue:
 
 ```
 npm start
 ```
 
-###License
+### License
 
 [MIT](https://github.com/redux_dj/dr_queue/LICENSE.md)

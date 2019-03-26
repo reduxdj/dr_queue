@@ -41,7 +41,6 @@ describe('E2E Tests for Dr Queue', () => {
       .set('Accept', 'application/json')
       .get(`/api/queue/${QUEUE_NAME}/length`)
       .expect(200, (err, res) => {
-        console.log(res.body)
         res.body.data.should.equal(10)
         done()
       })
@@ -63,7 +62,6 @@ describe('E2E Tests for Dr Queue', () => {
         .set('Accept', 'application/json')
         .get(`/api/queue/${QUEUE_NAME}/last/10`)
         .expect(200, (err, res) => {
-          console.log(res.body.data)
           res.body.data[9].beverage.should.equal('Chocolate Milk')
           done()
         })
@@ -121,7 +119,6 @@ describe('E2E Tests for Dr Queue', () => {
               .set('Accept', 'application/json')
               .set('Authorization', 'Bearer Go')
               .expect(200, (err, res) => {
-                console.log(res.body.data)
                 assert.strictEqual(res.body.data[0].beverage, 'Orange Crush')
                 done()
               })
@@ -133,7 +130,6 @@ describe('E2E Tests for Dr Queue', () => {
             .set('Authorization', 'Bearer Go')
 
             .expect(200, (err, res) => {
-              console.log(res.body.data)
               res.body.data[0].index.should.equal(3)
               done()
             })
