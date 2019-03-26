@@ -25,7 +25,20 @@
     "hostIp" : "127.0.0.1",
     "appName": "queue",
     "timezone": "America/Los_Angeles",
+    "hostname": "localhost",
     "useWebsockets": true
+  },
+  "logs": {
+    "transports":[
+      {
+      "name": "info",
+      "path": "./info.log",
+      "format": "txt"
+    },{
+      "name": "error",
+      "host": "./error.log",
+      "format": "txt"
+    }]
   },
   "credentials" : {
     "token" : "Go"

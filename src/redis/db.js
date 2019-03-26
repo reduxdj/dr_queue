@@ -7,6 +7,9 @@ const DB_CONSTANTS = {
   RIGHT: 1
 }
 
+export const LEFT = 'LEFT'
+export const RIGHT = 'RIGHT'
+
 function getJsonString(data) {
   if (typeof data === 'object')
     return JSON.stringify(data)
@@ -14,7 +17,7 @@ function getJsonString(data) {
 }
 
 function parseResult(result) {
-  if (result.match(/^"/))
+  if ((typeof result === 'string' && result).match(/^\{/)) // Pass along strings, maybe something is expecting a string?
     return Promise.resolve(JSON.parse(result))
   else if (result)
     return Promise.resolve(result)
@@ -26,9 +29,9 @@ export function parseList(item = '[]') {
   return Promise.resolve(item)
 }
 
-export async function pop(ctx, queueName) {
+export async function pop(queueName, direction = DB_CONSTANTS.RIGHT) {
   return new Promise(resolve => {
-    dbs.client.rpop(queueName, (err, data) => {
+    dbs.client[direction > 0 ? 'rpop' : 'lpop' ](queueName, (err, data) => {
       resolve(parseResult(data))
     })
   }).catch(log)
@@ -50,7 +53,7 @@ export async function popLeft(queueName) {
 }
 
 export async function popRight(queueName) {
-  return pop(queueName)
+  return pop(queueName, DB_CONSTANTS.LEFT) //we transpose this r
 }
 
 export async function pushLeft(queueName, item, direction = DB_CONSTANTS.LEFT) {
@@ -58,22 +61,23 @@ export async function pushLeft(queueName, item, direction = DB_CONSTANTS.LEFT) {
 }
 
 export async function pushRight(queueName, item, direction = DB_CONSTANTS.RIGHT){
-  return push(queueName, item, direction )
+  return push(queueName, item, direction)
 }
 
-export async function hasNext(queueName) {
+export function hasNext(queueName) {
   return new Promise(resolve =>
-    dbs.client.lrange(queueName, -1, -1, async (err, data) => {
-      resolve( Promise.resolve(true) || Promise.resolve())
+    dbs.client.lrange(queueName, -1, -1, (err, data) => {
+      resolve(!!data)
       })
     )
   }
 
 export async function range(queueName, start, stop) {
   return new Promise(resolve =>
-    dbs.client.lrange(queueName, start, stop, (err, data) =>
-      resolve((data && Array.isArray(data) ? data : []).filter(item => item.match(/\{"/g)).map(JSON.parse))
-    )
+    dbs.client.lrange(queueName, start, stop, (err, data) => {
+      const results = (data && Array.isArray(data) ? data : []).filter(item => item.match(/\{"/g)).map(JSON.parse)
+      resolve(results.reverse())
+    })
   )
 }
 
@@ -105,7 +109,7 @@ export async function last(queueName, count = 1) {
 }
 
 export async function first(queueName, count = 1) {
-  return (await range(queueName, count * -1, -1)).reverse()
+  return (await range(queueName, count * -1, -1))
 }
 
 /*

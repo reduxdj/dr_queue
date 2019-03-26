@@ -3,13 +3,15 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.logger = void 0;
+exports.default = exports.Logger = void 0;
 
 var _winston = _interopRequireDefault(require("winston"));
 
 var _momentTimezone = _interopRequireDefault(require("moment-timezone"));
 
 var _chalk = _interopRequireDefault(require("chalk"));
+
+var _config = _interopRequireDefault(require("config"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34,8 +36,10 @@ const alignColorsAndTime = _winston.default.format.combine(_winston.default.form
 }),
 /*eslint-disable */
 _winston.default.format.printf(function (_ref) {
-  let metadata = _ref.metadata,
-      env = _ref.env,
+  let _ref$metadata = _ref.metadata,
+      metadata = _ref$metadata === void 0 ? {} : _ref$metadata,
+      _ref$env = _ref.env,
+      env = _ref$env === void 0 ? {} : _ref$env,
       label = _ref.label,
       level = _ref.level,
       hostIp = _ref.hostIp,
@@ -53,9 +57,8 @@ _winston.default.format.printf(function (_ref) {
     env: env,
     hostIp: hostIp,
     appName: appName,
-    timestamp: timestamp,
-    env: env
-  }, metadata)));
+    timestamp: timestamp
+  }, info, metadata)));
 })
 /*eslint-enable */
 );
@@ -72,6 +75,52 @@ const logger = _winston.default.createLogger({
   })]
 });
 
-exports.logger = logger;
-var _default = logger;
+class Logger {
+  constructor(_ref2) {
+    let appName = _ref2.appName,
+        timezone = _ref2.timezone,
+        hostIp = _ref2.hostIp,
+        hostname = _ref2.hostname;
+    this.env = process.NODE_ENV || 'dev', this.appName = appName;
+    this.timezone = timezone;
+    this.hostIp = process.env.HOST_IP || hostIp;
+    this.hostname = process.env.HOSTNAME || hostname;
+  }
+
+  log() {
+    let message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+    let metadata = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    logger.log({
+      env: this.env,
+      hostIp: this.hostIp,
+      hostname: this.hostname,
+      appName: this.appName,
+      timezone: this.timezone,
+      level: 'info',
+      message: message,
+      metadata: metadata
+    });
+  }
+
+  error() {
+    let message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+    let metadata = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    logger.error({
+      env: process.NODE_ENV || 'dev',
+      hostIp: this.hostIp,
+      hostname: this.hostname,
+      appName: this.appName,
+      timezone: this.timezone,
+      level: 'error',
+      message: message,
+      metadata: metadata
+    });
+  }
+
+}
+
+exports.Logger = Logger;
+
+var _default = new Logger(_config.default.get('env'));
+
 exports.default = _default;

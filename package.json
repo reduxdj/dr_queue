@@ -1,13 +1,15 @@
 {
   "name": "dr_queue",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "This is Dr. Queue - A REST interface and Redis Queue manager packaged with koa2 to observe and handle queues",
   "main": "out/server.js",
   "scripts": {
     "clean": "rm -rf out/*",
+    "lint": "./node_modules/.bin/eslint src/*.js",
     "start": "npm run clean && npm run build && HOSTNAME='localhost' && HOST_IP='127.0.0.1' && node --trace-warnings out/server.js",
     "build": "bin/build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "mocha": "NODE_ENV=test && npm run build && ./node_modules/.bin/mocha test/*.js",
+    "test": "npm run lint && npm run mocha"
   },
   "repository": {
     "type": "git",
@@ -34,6 +36,7 @@
     "koa-websocket": "^5.0.1",
     "lodash": "^4.17.10",
     "microseconds": "^0.1.0",
+    "mocha": "^5.2.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.23",
     "redis": "^2.8.0",
@@ -58,7 +61,7 @@
     "@babel/preset-env": "^7.1.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
-    "eslint": "^5.8.0",
+    "eslint": "^5.15.3",
     "eslint-config-google": "^0.9.1",
     "eslint-plugin-import": "^2.13.0",
     "jest": "^23.6.0"

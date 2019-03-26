@@ -1,5 +1,5 @@
 import redis from 'redis'
-import {Logger} from '../server'
+import Logger from '../Logger'
 
 const redisRetryStrategy = ({ attempt }) => {
   if (attempt < 8) {

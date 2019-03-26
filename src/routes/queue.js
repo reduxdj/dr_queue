@@ -7,6 +7,7 @@ import {
   popLeft,
   popRight,
   pushRight,
+  pushLeft,
   hasNext,
   reset,
   range,
@@ -152,6 +153,18 @@ router.post('/:queueName/push',
   }
 })
 
+router.post('/:queueName/push_left',
+(ctx, next) => rolesRequired(ctx, next, 'admin', 'api'), async (ctx) => {
+  try {
+    ctx.body = { ok: true,
+      data: await pushLeft(ctx.params.queueName, ctx.request.body)
+    }
+  } catch (err) {
+    Logger.error(err)
+    ctx.throw(422)
+  }
+})
+
 router.post('/:queueName/push_right',
 (ctx, next) => rolesRequired(ctx, next, 'admin', 'api'), async (ctx) => {
   try {
@@ -163,6 +176,20 @@ router.post('/:queueName/push_right',
     ctx.throw(422)
   }
 })
+
+
+router.get('/:queueName/range/:start/:stop',
+(ctx, next) => rolesRequired(ctx, next, 'admin', 'api'), async (ctx) => {
+  try {
+    ctx.body = { ok: true,
+      data: await range(ctx.params.queueName, ctx.params.start, ctx.params.stop)
+    }
+  } catch (err) {
+    Logger.error(err)
+    ctx.throw(422)
+  }
+})
+
 
 router.get('/:queueName',
 (ctx, next) => rolesRequired(ctx, next, 'admin', 'api'), async (ctx) => {

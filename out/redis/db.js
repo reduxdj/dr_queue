@@ -21,6 +21,7 @@ exports.first = first;
 exports.pause = pause;
 exports.delay = delay;
 exports.clearDelay = clearDelay;
+exports.RIGHT = exports.LEFT = void 0;
 
 var _lodash = _interopRequireDefault(require("lodash"));
 
@@ -36,13 +37,18 @@ const DB_CONSTANTS = {
   LEFT: 0,
   RIGHT: 1
 };
+const LEFT = 'LEFT';
+exports.LEFT = LEFT;
+const RIGHT = 'RIGHT';
+exports.RIGHT = RIGHT;
 
 function getJsonString(data) {
   if (typeof data === 'object') return JSON.stringify(data);else return data;
 }
 
 function parseResult(result) {
-  if (result.match(/^"/)) return Promise.resolve(JSON.parse(result));else if (result) return Promise.resolve(result);else return Promise.resolve();
+  if ((typeof result === 'string' && result).match(/^\{/)) // Pass along strings, maybe something is expecting a string?
+    return Promise.resolve(JSON.parse(result));else if (result) return Promise.resolve(result);else return Promise.resolve();
 }
 
 function parseList() {
@@ -50,14 +56,15 @@ function parseList() {
   return Promise.resolve(item);
 }
 
-function pop(_x, _x2) {
+function pop(_x) {
   return _pop.apply(this, arguments);
 }
 
 function _pop() {
-  _pop = _asyncToGenerator(function* (ctx, queueName) {
+  _pop = _asyncToGenerator(function* (queueName) {
+    let direction = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : DB_CONSTANTS.RIGHT;
     return new Promise(resolve => {
-      _server.dbs.client.rpop(queueName, (err, data) => {
+      _server.dbs.client[direction > 0 ? 'rpop' : 'lpop'](queueName, (err, data) => {
         resolve(parseResult(data));
       });
     }).catch(_server.log);
@@ -79,7 +86,7 @@ function _push() {
   return _push.apply(this, arguments);
 }
 
-function popLeft(_x3) {
+function popLeft(_x2) {
   return _popLeft.apply(this, arguments);
 }
 
@@ -94,18 +101,18 @@ function _popLeft() {
   return _popLeft.apply(this, arguments);
 }
 
-function popRight(_x4) {
+function popRight(_x3) {
   return _popRight.apply(this, arguments);
 }
 
 function _popRight() {
   _popRight = _asyncToGenerator(function* (queueName) {
-    return pop(queueName);
+    return pop(queueName, DB_CONSTANTS.LEFT); //we transpose this r
   });
   return _popRight.apply(this, arguments);
 }
 
-function pushLeft(_x5, _x6) {
+function pushLeft(_x4, _x5) {
   return _pushLeft.apply(this, arguments);
 }
 
@@ -117,7 +124,7 @@ function _pushLeft() {
   return _pushLeft.apply(this, arguments);
 }
 
-function pushRight(_x7, _x8) {
+function pushRight(_x6, _x7) {
   return _pushRight.apply(this, arguments);
 }
 
@@ -129,39 +136,27 @@ function _pushRight() {
   return _pushRight.apply(this, arguments);
 }
 
-function hasNext(_x9) {
-  return _hasNext.apply(this, arguments);
+function hasNext(queueName) {
+  return new Promise(resolve => _server.dbs.client.lrange(queueName, -1, -1, (err, data) => {
+    resolve(!!data);
+  }));
 }
 
-function _hasNext() {
-  _hasNext = _asyncToGenerator(function* (queueName) {
-    return new Promise(resolve => _server.dbs.client.lrange(queueName, -1, -1,
-    /*#__PURE__*/
-    function () {
-      var _ref = _asyncToGenerator(function* (err, data) {
-        resolve(Promise.resolve(true) || Promise.resolve());
-      });
-
-      return function (_x20, _x21) {
-        return _ref.apply(this, arguments);
-      };
-    }()));
-  });
-  return _hasNext.apply(this, arguments);
-}
-
-function range(_x10, _x11, _x12) {
+function range(_x8, _x9, _x10) {
   return _range.apply(this, arguments);
 }
 
 function _range() {
   _range = _asyncToGenerator(function* (queueName, start, stop) {
-    return new Promise(resolve => _server.dbs.client.lrange(queueName, start, stop, (err, data) => resolve((data && Array.isArray(data) ? data : []).filter(item => item.match(/\{"/g)).map(JSON.parse))));
+    return new Promise(resolve => _server.dbs.client.lrange(queueName, start, stop, (err, data) => {
+      const results = (data && Array.isArray(data) ? data : []).filter(item => item.match(/\{"/g)).map(JSON.parse);
+      resolve(results.reverse());
+    }));
   });
   return _range.apply(this, arguments);
 }
 
-function lastOne(_x13) {
+function lastOne(_x11) {
   return _lastOne.apply(this, arguments);
 }
 
@@ -173,7 +168,7 @@ function _lastOne() {
   return _lastOne.apply(this, arguments);
 }
 
-function firstOne(_x14) {
+function firstOne(_x12) {
   return _firstOne.apply(this, arguments);
 }
 
@@ -185,7 +180,7 @@ function _firstOne() {
   return _firstOne.apply(this, arguments);
 }
 
-function length(_x15) {
+function length(_x13) {
   return _length.apply(this, arguments);
 }
 
@@ -196,7 +191,7 @@ function _length() {
   return _length.apply(this, arguments);
 }
 
-function reset(_x16) {
+function reset(_x14) {
   return _reset.apply(this, arguments);
 }
 
@@ -207,7 +202,7 @@ function _reset() {
   return _reset.apply(this, arguments);
 }
 
-function last(_x17) {
+function last(_x15) {
   return _last.apply(this, arguments);
 }
 
@@ -219,7 +214,7 @@ function _last() {
   return _last.apply(this, arguments);
 }
 
-function first(_x18) {
+function first(_x16) {
   return _first.apply(this, arguments);
 }
 /*
@@ -230,7 +225,7 @@ function first(_x18) {
 function _first() {
   _first = _asyncToGenerator(function* (queueName) {
     let count = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-    return (yield range(queueName, count * -1, -1)).reverse();
+    return yield range(queueName, count * -1, -1);
   });
   return _first.apply(this, arguments);
 }
@@ -267,7 +262,7 @@ function _delay() {
   return _delay.apply(this, arguments);
 }
 
-function clearDelay(_x19) {
+function clearDelay(_x17) {
   return _clearDelay.apply(this, arguments);
 }
 

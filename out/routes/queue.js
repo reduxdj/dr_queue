@@ -222,14 +222,14 @@ function () {
     return _ref10.apply(this, arguments);
   };
 }());
-router.post('/:queueName/push_right', (ctx, next) => (0, _middleware.default)(ctx, next, 'admin', 'api'),
+router.post('/:queueName/push_left', (ctx, next) => (0, _middleware.default)(ctx, next, 'admin', 'api'),
 /*#__PURE__*/
 function () {
   var _ref11 = _asyncToGenerator(function* (ctx) {
     try {
       ctx.body = {
         ok: true,
-        data: yield (0, _db.pushRight)(ctx.params.queueName, ctx.request.body)
+        data: yield (0, _db.pushLeft)(ctx.params.queueName, ctx.request.body)
       };
     } catch (err) {
       _server.Logger.error(err);
@@ -242,10 +242,50 @@ function () {
     return _ref11.apply(this, arguments);
   };
 }());
-router.get('/:queueName', (ctx, next) => (0, _middleware.default)(ctx, next, 'admin', 'api'),
+router.post('/:queueName/push_right', (ctx, next) => (0, _middleware.default)(ctx, next, 'admin', 'api'),
 /*#__PURE__*/
 function () {
   var _ref12 = _asyncToGenerator(function* (ctx) {
+    try {
+      ctx.body = {
+        ok: true,
+        data: yield (0, _db.pushRight)(ctx.params.queueName, ctx.request.body)
+      };
+    } catch (err) {
+      _server.Logger.error(err);
+
+      ctx.throw(422);
+    }
+  });
+
+  return function (_x12) {
+    return _ref12.apply(this, arguments);
+  };
+}());
+router.get('/:queueName/range/:start/:stop', (ctx, next) => (0, _middleware.default)(ctx, next, 'admin', 'api'),
+/*#__PURE__*/
+function () {
+  var _ref13 = _asyncToGenerator(function* (ctx) {
+    try {
+      ctx.body = {
+        ok: true,
+        data: yield (0, _db.range)(ctx.params.queueName, ctx.params.start, ctx.params.stop)
+      };
+    } catch (err) {
+      _server.Logger.error(err);
+
+      ctx.throw(422);
+    }
+  });
+
+  return function (_x13) {
+    return _ref13.apply(this, arguments);
+  };
+}());
+router.get('/:queueName', (ctx, next) => (0, _middleware.default)(ctx, next, 'admin', 'api'),
+/*#__PURE__*/
+function () {
+  var _ref14 = _asyncToGenerator(function* (ctx) {
     try {
       ctx.body = {
         ok: true,
@@ -258,8 +298,8 @@ function () {
     }
   });
 
-  return function (_x12) {
-    return _ref12.apply(this, arguments);
+  return function (_x14) {
+    return _ref14.apply(this, arguments);
   };
 }());
 var _default = router;
