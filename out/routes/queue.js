@@ -269,7 +269,7 @@ function () {
     try {
       ctx.body = {
         ok: true,
-        data: yield (0, _db.range)(ctx.params.queueName, ctx.params.start, ctx.params.stop)
+        data: yield (0, _db.sRange)(ctx.params.queueName, ctx.params.start, ctx.params.stop)
       };
     } catch (err) {
       _server.Logger.error(err);

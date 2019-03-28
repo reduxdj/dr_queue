@@ -11,6 +11,7 @@ import {
   hasNext,
   reset,
   range,
+  sRange,
   pop,
 } from '../redis/db'
 import {Logger} from '../server'
@@ -182,7 +183,7 @@ router.get('/:queueName/range/:start/:stop',
 (ctx, next) => rolesRequired(ctx, next, 'admin', 'api'), async (ctx) => {
   try {
     ctx.body = { ok: true,
-      data: await range(ctx.params.queueName, ctx.params.start, ctx.params.stop)
+      data: await sRange(ctx.params.queueName, ctx.params.start, ctx.params.stop)
     }
   } catch (err) {
     Logger.error(err)

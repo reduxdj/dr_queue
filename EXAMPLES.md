@@ -1,5 +1,5 @@
 ### Examples
-Assuming items, are by default from left to right, FIFO.
+Assuming items are by default, originating from left to right, FIFO.
 
 
 To create a new queue named test and push an item onto that queue:
@@ -62,21 +62,12 @@ curl -X GET \
   -H 'Content-Type: application/json'
 ```
 
-To add ah item to the right side of the test queue:
+To push an item to the right side of the test queue:
 ```
 curl -X GET \
   http://localhost:8000/api/queue/test/push \
   -H 'Authorization: Bearer Go' \
   -H 'Content-Type: application/json'
-```
-
-To find the length of the queue:
-```
-curl -X GET \
-  http://localhost:8000/api/queue/test/length \
-  -H 'Authorization: Bearer Go' \
-  -H 'Content-Type: application/json' \
-  -H 'cache-control: no-cache'
 ```
 
 To get the first item (to the left) in test queue:
@@ -95,10 +86,18 @@ curl -X GET \
   -H 'Content-Type: application/json'
 ```
 
-To select a range of items from index 3 to 6
+To select a range of items from index position 3 to 5
 ```
 curl -X GET \
   http://localhost:8000/api/queue/test/range/3/6 \
   -H 'Authorization: Bearer Go' \
   -H 'Content-Type: application/json'
 ```
+
+<sub>
+Note: Range returns a subset of the list from left to right
+The index is zero based, and the amount of items
+is equal to the stop minus the start index (if there's enough get items in the list to return).
+This is similar to Python's range command and unlike Redis' native
+range command, which includes the last stop index.
+</sub>

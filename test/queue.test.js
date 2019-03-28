@@ -134,4 +134,24 @@ describe('E2E Tests for Dr Queue', () => {
               done()
             })
       })
+      it('should select a range of items indices, 2, 7 and the length should 5', (done) => {
+          request.get(`/api/queue/${QUEUE_NAME}/range/2/7`)
+            .set('Accept', 'application/json')
+            .set('Authorization', 'Bearer Go')
+
+            .expect(200, (err, res) => {
+              res.body.data.length.should.equal(5)
+              done()
+            })
+      })
+      it('should select a range of items indices, 2, 7 and the length should 5', (done) => {
+          request.get(`/api/queue/${QUEUE_NAME}/range/5/6`)
+            .set('Accept', 'application/json')
+            .set('Authorization', 'Bearer Go')
+
+            .expect(200, (err, res) => {
+              res.body.data[0].beverage.should.equal('Orange Juice')
+              done()
+            })
+      })
 })

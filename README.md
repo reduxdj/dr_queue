@@ -3,16 +3,16 @@
 Control your Redis Queues with a simple REST HTTP interface.
 Dr Queue, combines a Koa 2.0 web server with multiple Redis connections
 
-Simply POST your payload on to your queue, serialization will make your object into a JSON string,
+Simply POST your payload on to your queue, then serialization will make your object into a JSON string,
 or GET an item off the queue, serialization back to an object is also automatic.
 
-Lists are dynamic, just like Redis, to create a list, POST a JSON body into the /api/queue/<queueName>/push endpoint.
+Lists are dynamic, just like Redis, to create a list, POST a JSON body into the /api/queue/<b>queueName</b>/push endpoint.
 
 Queues, are assumed to originate from left to right.
 
 ### Why?
 Reasoning about queues is not easy, especially because we think of them like arrays, but Redis can make this a little confusing,
-especially with its indices in its commands.
+especially with its indice complexity in its commands. Say you wanted to build a simple pagination for loading more items in a redis list, you have to first reason about the range command and its subtle differences to range or array.slice.
 
 ### Documentation
 Just like REST interfaces, GET requests are non-destructive read operations of the queue,
@@ -44,4 +44,4 @@ npm start
 
 ### License
 
-[MIT](https://github.com/redux_dj/dr_queue/LICENSE.md)
+[MIT](https://github.com/reduxdj/dr_queue/blob/master/LICENSE.md)
