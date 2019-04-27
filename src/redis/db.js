@@ -1,6 +1,23 @@
 // import dump from 'redis-dump'
 import _ from 'lodash'
-import { dbs, log } from '../server'
+import { log } from '../server'
+
+export const dbs = {
+  // holds a reference to all our clients in a map
+  // client, subscriber, publisher
+}
+
+export function setPublisher(publisher) {
+  dbs[publisher] = publisher
+}
+
+export function setSubscriber(subcriber) {
+  dbs[subcriber] = subcriber
+}
+
+export function setClient(client) {
+  dbs[client] = client
+}
 
 const DB_CONSTANTS = {
   LEFT: 0,
@@ -147,3 +164,17 @@ export function delay(secs = 1) {
 export function clearDelay(timeout) {
   Promise.resolve(() => clearTimeout(timeout)) //eslint-disable-line
 }
+
+export function publish(channel, val) {
+    return new Promise((resolve, reject) => {
+      const createdAt = new Date()
+      const data = { ...val, createdAt }
+      dbs.publisher.publish(
+        channel,
+        JSON.stringify(data),
+        (err) => err
+          ? reject()
+          : resolve(data)
+      )
+    })
+  }

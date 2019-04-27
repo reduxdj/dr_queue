@@ -26,17 +26,14 @@
     "appName": "queue",
     "timezone": "America/Los_Angeles",
     "hostname": "localhost",
-    "useWebsockets": true
-  },
-  "logs": {
+    "useWebsockets": true,
+    "errorIgnoreLevels": [401, 403],
     "transports":[
       {
-      "name": "info",
-      "path": "./info.log",
+      "filename": "./info.log",
       "format": "txt"
     },{
-      "name": "error",
-      "host": "./error.log",
+      "filename": "./error.log",
       "format": "txt"
     }]
   },

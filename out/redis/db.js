@@ -3,6 +3,9 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.setPublisher = setPublisher;
+exports.setSubscriber = setSubscriber;
+exports.setClient = setClient;
 exports.parseList = parseList;
 exports.pop = pop;
 exports.push = push;
@@ -22,7 +25,8 @@ exports.first = first;
 exports.pause = pause;
 exports.delay = delay;
 exports.clearDelay = clearDelay;
-exports.RIGHT = exports.LEFT = void 0;
+exports.publish = publish;
+exports.RIGHT = exports.LEFT = exports.dbs = void 0;
 
 var _lodash = _interopRequireDefault(require("lodash"));
 
@@ -30,9 +34,30 @@ var _server = require("../server");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+const dbs = {// holds a reference to all our clients in a map
+  // client, subscriber, publisher
+};
+exports.dbs = dbs;
+
+function setPublisher(publisher) {
+  dbs[publisher] = publisher;
+}
+
+function setSubscriber(subcriber) {
+  dbs[subcriber] = subcriber;
+}
+
+function setClient(client) {
+  dbs[client] = client;
+}
 
 const DB_CONSTANTS = {
   LEFT: 0,
@@ -65,7 +90,7 @@ function _pop() {
   _pop = _asyncToGenerator(function* (queueName) {
     let direction = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : DB_CONSTANTS.RIGHT;
     return new Promise(resolve => {
-      _server.dbs.client[direction > 0 ? 'rpop' : 'lpop'](queueName, (err, data) => {
+      dbs.client[direction > 0 ? 'rpop' : 'lpop'](queueName, (err, data) => {
         resolve(parseResult(data));
       });
     }).catch(_server.log);
@@ -77,12 +102,12 @@ function push() {
   let queueName = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'bad-queue';
   let item = arguments.length > 1 ? arguments[1] : undefined;
   let direction = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : DB_CONSTANTS.LEFT;
-  return new Promise(resolve => _server.dbs.client[direction > 0 ? 'rpush' : 'lpush'](queueName, getJsonString(item), (err, data) => resolve(data))).catch(_server.log);
+  return new Promise(resolve => dbs.client[direction > 0 ? 'rpush' : 'lpush'](queueName, getJsonString(item), (err, data) => resolve(data))).catch(_server.log);
 }
 
 function popLeft(queueName) {
   return new Promise(resolve => {
-    _server.dbs.client.lpop(queueName, (err, data) => {
+    dbs.client.lpop(queueName, (err, data) => {
       resolve(parseResult(data));
     });
   }).catch(_server.log);
@@ -117,20 +142,20 @@ function pushRight(queueName, item) {
 }
 
 function hasNext(queueName) {
-  return new Promise(resolve => _server.dbs.client.lrange(queueName, -1, -1, (err, data) => {
+  return new Promise(resolve => dbs.client.lrange(queueName, -1, -1, (err, data) => {
     resolve(!!data);
   }));
 }
 
 function range(queueName, start, stop) {
-  return new Promise(resolve => _server.dbs.client.lrange(queueName, start, stop, (err, data) => {
+  return new Promise(resolve => dbs.client.lrange(queueName, start, stop, (err, data) => {
     const results = (data && Array.isArray(data) ? data : []).filter(item => item.match(/\{"/g)).map(JSON.parse);
     resolve(results.reverse());
   }));
 }
 
 function sRange(queueName, start, stop) {
-  return new Promise(resolve => _server.dbs.client.lrange(queueName, 0, stop + start - 1, (err, data) => {
+  return new Promise(resolve => dbs.client.lrange(queueName, 0, stop + start - 1, (err, data) => {
     const results = (data && Array.isArray(data) ? data : []).filter(item => item.match(/\{"/g)).map(JSON.parse);
     resolve(results.reverse().slice(start, stop));
   }));
@@ -161,11 +186,11 @@ function _firstOne() {
 }
 
 function length(queueName) {
-  return new Promise(resolve => _server.dbs.client.llen(queueName, (err, data) => resolve(data))).catch(_server.log);
+  return new Promise(resolve => dbs.client.llen(queueName, (err, data) => resolve(data))).catch(_server.log);
 }
 
 function reset(queueName) {
-  return new Promise(resolve => _server.dbs.client.del(queueName, 0, -1, (err, data) => resolve(data))).catch(_server.log);
+  return new Promise(resolve => dbs.client.del(queueName, 0, -1, (err, data) => resolve(data))).catch(_server.log);
 }
 
 function last(_x7) {
@@ -216,4 +241,16 @@ function delay() {
 
 function clearDelay(timeout) {
   Promise.resolve(() => clearTimeout(timeout)); //eslint-disable-line
+}
+
+function publish(channel, val) {
+  return new Promise((resolve, reject) => {
+    const createdAt = new Date();
+
+    const data = _objectSpread({}, val, {
+      createdAt: createdAt
+    });
+
+    dbs.publisher.publish(channel, JSON.stringify(data), err => err ? reject() : resolve(data));
+  });
 }

@@ -1,6 +1,5 @@
 ### Examples
-Assuming items are by default, originating from left to right, FIFO.
-
+Assuming items are by default, originating from left to right, FIFO, or first in first out.
 
 To create a new queue named test and push an item onto that queue:
 
@@ -101,3 +100,13 @@ is equal to the stop minus the start index (if there's enough get items in the l
 This is similar to Python's range command and unlike Redis' native
 range command, which includes the last stop index.
 </sub>
+
+
+To publish into the channel:
+```
+curl -X POST \
+  http://localhost:8000/api/publisher/<envName>:<appName>:<resource>:<etc>
+  -H 'Authorization: Bearer Go' \
+  -H 'Content-Type: application/json'
+```
+See: [(PubSub)](https://github.com/reduxdj/dr_queue/blob/master/EXAMPLES.md)

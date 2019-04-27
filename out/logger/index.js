@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.Logger = void 0;
+exports.getLogger = exports.default = exports.Logger = exports.COLORS = void 0;
 
 var _winston = _interopRequireDefault(require("winston"));
 
@@ -12,6 +12,8 @@ var _momentTimezone = _interopRequireDefault(require("moment-timezone"));
 var _chalk = _interopRequireDefault(require("chalk"));
 
 var _config = _interopRequireDefault(require("config"));
+
+var _db = require("../redis/db");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -28,6 +30,7 @@ const COLORS = {
   magentaBright: 'magentaBright',
   whiteBright: 'whiteBright'
 };
+exports.COLORS = COLORS;
 
 const alignColorsAndTime = _winston.default.format.combine(_winston.default.format.colorize({
   all: true
@@ -63,34 +66,70 @@ _winston.default.format.printf(function (_ref) {
 /*eslint-enable */
 );
 
-const logger = _winston.default.createLogger({
-  level: "info",
-  transports: [new _winston.default.transports.File({
-    filename: 'error.log',
-    level: 'error'
-  }), new _winston.default.transports.File({
-    filename: 'combined.log'
-  }), new _winston.default.transports.Console({
-    format: _winston.default.format.combine(_winston.default.format.colorize(), alignColorsAndTime)
-  })]
-});
+function createTransport(_ref2) {
+  let filename = _ref2.filename,
+      level = _ref2.level;
+  return new _winston.default.transports.File({
+    filename: filename,
+    level: level
+  });
+}
+
+function createLogger(transports) {
+  return _winston.default.createLogger({
+    level: "info",
+    transports: (transports ? transports.map(createTransport) : [new _winston.default.transports.File({
+      filename: 'error.log',
+      level: 'error'
+    }), new _winston.default.transports.File({
+      filename: 'info.log',
+      level: 'info'
+    })]).concat(new _winston.default.transports.Console({
+      format: _winston.default.format.combine(_winston.default.format.colorize(), alignColorsAndTime)
+    }))
+  });
+}
+
+let logger;
 
 class Logger {
-  constructor(_ref2) {
-    let appName = _ref2.appName,
-        timezone = _ref2.timezone,
-        hostIp = _ref2.hostIp,
-        hostname = _ref2.hostname;
+  constructor(_ref3) {
+    let appName = _ref3.appName,
+        timezone = _ref3.timezone,
+        hostIp = _ref3.hostIp,
+        hostname = _ref3.hostname,
+        _ref3$errorIgnoreLeve = _ref3.errorIgnoreLevels,
+        errorIgnoreLevels = _ref3$errorIgnoreLeve === void 0 ? [] : _ref3$errorIgnoreLeve,
+        transports = _ref3.transports;
+    let redisConnections = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    logger = createLogger(transports);
     this.env = process.NODE_ENV || 'dev', this.appName = appName;
     this.timezone = timezone;
     this.hostIp = process.env.HOST_IP || hostIp;
     this.hostname = process.env.HOSTNAME || hostname;
+    this.errorIgnoreLevels = errorIgnoreLevels;
+    const publisher = redisConnections.publisher,
+          client = redisConnections.client;
+
+    if (publisher) {
+      _db.dbs[publisher] = publisher;
+      this.publisher = publisher;
+    }
+
+    if (client) {
+      _db.dbs[client] = client;
+      this.client = client;
+    }
+  }
+
+  getInoreLevels() {
+    return this.errorIgnoreLevels;
   }
 
   log() {
     let message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
     let metadata = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    logger.log({
+    const payload = {
       env: this.env,
       hostIp: this.hostIp,
       hostname: this.hostname,
@@ -99,14 +138,17 @@ class Logger {
       level: 'info',
       message: message,
       metadata: metadata
-    });
+    };
+    logger.log(payload);
+    if (this.publisher) (0, _db.publish)("".concat(this.env, ":").concat(this.appName), payload);
+    if (this.client) (0, _db.push)("".concat(this.env, ":").concat(this.appName), payload);
   }
 
   error() {
     let message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
     let metadata = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    logger.error({
-      env: process.NODE_ENV || 'dev',
+    const payload = {
+      env: this.env,
       hostIp: this.hostIp,
       hostname: this.hostname,
       appName: this.appName,
@@ -114,7 +156,10 @@ class Logger {
       level: 'error',
       message: message,
       metadata: metadata
-    });
+    };
+    logger.error(payload);
+    if (this.publisher) (0, _db.publish)("".concat(this.env, ":").concat(this.appName), payload);
+    if (this.client) (0, _db.push)("".concat(this.env, ":").concat(this.appName), payload);
   }
 
 }
@@ -124,3 +169,7 @@ exports.Logger = Logger;
 var _default = new Logger(_config.default.get('env'));
 
 exports.default = _default;
+
+const getLogger = (config, redisConnections) => new Logger(config, redisConnections);
+
+exports.getLogger = getLogger;

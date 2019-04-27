@@ -23,7 +23,7 @@ function _default(_x, _x2) {
 
 function _ref() {
   _ref = _asyncToGenerator(function* (ctx, next) {
-    _Logger.default.log("".concat(ctx.method, " ").concat(ctx.path), _objectSpread({
+    _Logger.default.log("".concat(ctx.method, " ").concat(ctx.status, " ").concat(ctx.path), _objectSpread({
       path: ctx.request.path,
       requestIp: ctx.request.ip,
       method: ctx.method

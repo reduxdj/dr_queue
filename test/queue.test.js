@@ -1,10 +1,9 @@
 const supertest = require('supertest')
 const {should, assert} = require('chai')
-const {app, start} = require('../out/server')
+const {app} = require('./server')
 const {reset, push} = require('../out/redis/db')
-/* eslint-disable */
-const request = supertest.agent(app.listen())
 
+/* eslint-disable */
 const QUEUE_NAME = 'test'
 const COUNT = 9
 
@@ -26,13 +25,15 @@ const getDrink = (i = 0) => ['Dr Pepper',
 const getItems = (n) => new Array(n).fill(6).map((item, index) => ({index, beverage: getDrink(index) }))
 
 const items = getItems(10)
+
 async function factorySetup(queueName = QUEUE_NAME) {
-  await start
   await reset(queueName)
   await Promise.all(items.map((item) => push(QUEUE_NAME, item)))
 }
 
-describe('E2E Tests for Dr Queue', () => {
+const request = supertest.agent(app.listen())
+
+describe('E2E Tests for Dr Queue queues', () => {
   beforeEach(() => factorySetup())
 
   it('should start off 10 items in the queue', (done) => {
@@ -138,20 +139,18 @@ describe('E2E Tests for Dr Queue', () => {
           request.get(`/api/queue/${QUEUE_NAME}/range/2/7`)
             .set('Accept', 'application/json')
             .set('Authorization', 'Bearer Go')
-
             .expect(200, (err, res) => {
               res.body.data.length.should.equal(5)
               done()
             })
       })
-      it('should select a range of items indices, 2, 7 and the length should 5', (done) => {
+      it('should select a range of items indices, 5, 6 and the length should 1', (done) => {
           request.get(`/api/queue/${QUEUE_NAME}/range/5/6`)
             .set('Accept', 'application/json')
             .set('Authorization', 'Bearer Go')
-
             .expect(200, (err, res) => {
               res.body.data[0].beverage.should.equal('Orange Juice')
               done()
-            })
+          })
       })
 })

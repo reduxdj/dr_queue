@@ -1,5 +1,5 @@
 import config from 'config'
-import Logger from './logger'
+import Logger, {getLogger} from './logger'
 import createConnection from './redis'
 import Koa from 'koa'
 import Router from 'koa-router'
@@ -7,16 +7,20 @@ import routing from './routes'
 import websockify from 'koa-websocket'
 import moment from 'moment'
 import bodyParser from 'koa-bodyparser'
-import koaLogger from './middleware/logger'
+import {loggerMiddleware} from './middleware'
+import {dbs} from './redis/db'
+import {argv} from 'process'
+
+const isRunningSubscriber = argv.find((item) => item.includes('subscriber'))
+
 
 export const upTime = moment().format('MMMM Do YYYY, h:mm:ss a')
 const router = new Router()
 const {redis} = config.get('db')
 const {port, protocol, useWebsockets, hostIp} = config.get('webserver')
-export const dbs = {
-  // holds a reference to all our clients in a map
-  // client, subscriber, publisher
-}
+export const app = (useWebsockets
+    ? websockify(new Koa())
+    : new Koa())
 
 export async function start() {
   return new Promise((resolve) => {
@@ -25,21 +29,23 @@ export async function start() {
     ).then((results) => {
       results.map(({redisClient, name}) => {
         dbs[name] = redisClient
-        Logger.log('Connection Established')
+        Logger.log(`Connection Established to ${name}`)
       })
     }).then(resolve)
   })
 }
 
-export const app = (useWebsockets
-    ? websockify(new Koa())
-    : new Koa())
+function startServer() {
+  Logger.log('Starting Server')
+  app.use(bodyParser())
   .use(bodyParser())
-  .use(koaLogger)
+  .use(loggerMiddleware(getLogger(config.get('env'))))
   .use(router.allowedMethods())
-routing(app)
-  app.listen(port, () => Logger.log(`✅ The server is running at ${protocol}://${hostIp}:${port}/`), {meta: 'test'})
+    app.listen(port, () => Logger.log(`✅ The server is running at ${protocol}://${hostIp}:${port}/`), {meta: 'test'})
+  routing(app)
+  return app
+}
 
-start()
-
-Logger.log(`App Started ⏰`, {result: 1})
+if (!isRunningSubscriber)
+  start().then(startServer)
+export default app

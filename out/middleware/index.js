@@ -3,13 +3,17 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = rolesRequired;
+exports.getToken = getToken;
+exports.default = rolesRequiredMiddleware;
+exports.loggerMiddleware = loggerMiddleware;
 
 var _config = _interopRequireDefault(require("config"));
 
-var _server = require("../server");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -29,14 +33,18 @@ function getToken(_ref) {
   }
 
   return token;
+} // example roles logic
+// const roles = ['admin', 'api'] //this should be coming from a user API - just for example
+// const foundRole = args.some(arg => roles.find(role => role === arg))
+// foundRole ? next() : ctx.throw(403, 'You are not Authorized')
+
+
+function rolesRequiredMiddleware(_x, _x2) {
+  return _rolesRequiredMiddleware.apply(this, arguments);
 }
 
-function rolesRequired(_x, _x2) {
-  return _rolesRequired.apply(this, arguments);
-}
-
-function _rolesRequired() {
-  _rolesRequired = _asyncToGenerator(function* (ctx, next) {
+function _rolesRequiredMiddleware() {
+  _rolesRequiredMiddleware = _asyncToGenerator(function* (ctx, next) {
     try {
       const userToken = getToken(ctx);
       if (!userToken) ctx.throw(401);
@@ -46,20 +54,40 @@ function _rolesRequired() {
           token: token
         };
         ctx.throw(403, 'You are not Authorized');
-      } // example roles logic
-      // const roles = ['admin', 'api'] //this should be coming from a user API - just for example
-      // const foundRole = args.some(arg => roles.find(role => role === arg))
-      // foundRole ? next() : ctx.throw(403, 'You are not Authorized')
-
+      }
 
       return next();
     } catch (err) {
-      _server.Logger.error(err);
-
+      //Logger.error(err)
       ctx.throw(403, 'You are not Authorized');
     }
 
     return undefined;
   });
-  return _rolesRequired.apply(this, arguments);
+  return _rolesRequiredMiddleware.apply(this, arguments);
+}
+
+function loggerMiddleware(Logger) {
+  const errorIgnoreLevels = Logger.getInoreLevels();
+  return (
+    /*#__PURE__*/
+    function () {
+      var _ref2 = _asyncToGenerator(function* (ctx, next) {
+        const start = new Date();
+        yield next();
+        const ms = new Date() - start;
+        const bypassError = !!errorIgnoreLevels.find(status => ctx.status === status);
+        const hasError = ctx.status >= 400 && !bypassError;
+        if (hasError) Logger.error("".concat(ctx.request.origin, " ").concat(ctx.method, " ").concat(ctx.status, " ").concat(ctx.request.path, " "), _objectSpread({}, ctx.request.body, {
+          ms: ms
+        }));else Logger.log("".concat(ctx.request.origin, " ").concat(ctx.method, " ").concat(ctx.status, " ").concat(ctx.request.path, " "), _objectSpread({}, ctx.request.body, {
+          ms: ms
+        }));
+      });
+
+      return function (_x3, _x4) {
+        return _ref2.apply(this, arguments);
+      };
+    }()
+  );
 }
