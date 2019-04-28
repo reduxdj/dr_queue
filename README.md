@@ -24,7 +24,7 @@ Just like REST interfaces, GET requests are non-destructive read operations of t
 
 - [Workers](https://github.com/reduxdj/dr_queue/blob/master/WORKERS.md)
 
-- [Middleware](https://github.com/reduxdj/dr_queue/blob/master/MIDDELWARE.md)
+- [Middleware](https://github.com/reduxdj/dr_queue/blob/master/MIDDLEWARE.md)
 
 - [Roadmap](https://github.com/reduxdj/dr_queue/blob/master/ROADMAP.md)
 
