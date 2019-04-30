@@ -10,7 +10,7 @@ Using Dr Queue as middleware is an option if you already have a webserver and wa
 To initialize the middleware logger, create an instance with a configuration object
 
 ##### Example:
-```
+```js
 import {Logger as LoggerUtil} from 'dr_queue'
 import Koa from 'koa'
 import Router from 'koa-router'
@@ -58,7 +58,7 @@ return app
 
 
 Or, you can set your connections later if necessary:
-```
+```js
 export const Logger = LoggerUtil.init(config)
 Logger.setRedisConnections({ publisher: dbs.redisPublisher, client: dbs.redisClient })
 ```
@@ -66,14 +66,14 @@ Logger.setRedisConnections({ publisher: dbs.redisPublisher, client: dbs.redisCli
 
 To add middleware you just add this line to your Koa middleware like this,
 
-```
+```js
 const app = new Koa()
 app.use(LoggerUtil.init(config))
 ```
 
 Or, just pass the instance
 
-```
+```js
 export const Logger = LoggerUtil.init(config)
 const app = new Koa()
 app.use(Logger)

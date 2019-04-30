@@ -11,7 +11,7 @@ Dr Queue requires Koa bodyParse middleware if you want to see the request body a
 
 ##### Example: TLDR;
 
-```
+```js
 import {Logger as LoggerUtil} from 'dr_queue'
 import Koa from 'koa'
 import Router from 'koa-router'
@@ -68,12 +68,12 @@ To allow queues (and/or publishing messages to a Redis subcriber), the second ar
 
 <b>In a console window, type:</b>
 
-```
+```sh
 npm run test:grep Middleware
 ```
 
 <b>Open another console window, type:</b>
 
-```
+```sh
 CHANNEL=dev:queue npm run subscriber
 ```

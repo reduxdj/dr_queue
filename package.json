@@ -74,5 +74,5 @@
     "semi": false,
     "printWidth": 110
   },
-  "keywords": ["Logging", "Winston", "Koa", "Middleware" ]
+  "keywords": ["Logging", "Winston", "Koa", "Middleware", "pubnub", "Queue"]
 }

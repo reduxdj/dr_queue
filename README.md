@@ -5,12 +5,13 @@ Control your Redis Queues with a simple REST HTTP interface, or just use the mid
 
 #### Push, Pop, or inspect your Redis Lists
 Simply POST your payload on to your queue, then serialization will make your object into a JSON string, or GET an item off the queue, serialization back to an object is also automatic. Lists are dynamic, just like Redis, to create a list, POST a JSON body into the /api/queue/<b>queueName</b>/push endpoint. Queues are assumed to originate from left to right.
-[![Redis](https://github.com/reduxdj/dr_queue/blob/master/examples/redis.png)
+
+![Redis](https://s3-us-west-2.amazonaws.com/iflipdgraphicsbucket/redis.png)
 
 #### Logging, included
-Add middleware with Redis to handle your logging aggregation through streams and queues.
+Add middleware with Redis connections to handle aggregation through streams and queues.
 
-[![Logging](https://github.com/reduxdj/dr_queue/blob/master/examples/redis.png)
+![Logging](https://s3-us-west-2.amazonaws.com/iflipdgraphicsbucket/logger.png)
 
 #### Why?
 Reasoning about what's in your queue is not easy, Dr Queue provides clear introspection to find what's in your queue.

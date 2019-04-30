@@ -21,7 +21,7 @@ Publish a channel payload to <b>prod:webapp:users</b>, and then internally in yo
 
 You might want to send a payload of IPs that the user has logged in from recently.
 
-```
+```sh
 curl -X POST \
   http://localhost:8000/api/publisher/prod:iflipd:users:123 \
   -H 'Authorization: Bearer Go' \
@@ -35,16 +35,30 @@ curl -X POST \
 
 To activate your subscriber script, start this script to listen to events
 
-```
+```sh
 <envName>:<appName> npm run subsriber
 ```
 
 ##### Example:
 
-```
+```sh
 CHANNEL=prod:webapp npm run subscriber
 ```
 
 The keys of the array created by the subscription are rolled up into the payload to make the handling of logic simplified, so you can subscribe to one app level channel message that you want and handle the resource logic under one Redis subscription, everything beyond the first 4 keys: envName, appName, resourceKey and resourceName, are captured into an array of extraPaths that you can access in the message object payload if needed.
 
-#### Subscription Logic Example
+#### Subscription Logic
+
+##### Example:
+
+<b>In a console window, type:</b>
+
+```sh
+npm start
+```
+
+<b>Open another console window, type:</b>
+
+```sh
+CHANNEL=dev:queue npm run subscriber
+```
