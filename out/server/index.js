@@ -87,7 +87,7 @@ function _start() {
 
 function startServer() {
   logger.log('Starting Server');
-  app.use((0, _koaBodyparser.default)()).use((0, _koaBodyparser.default)()).use((0, _middleware.loggerMiddleware)((0, _logger.getLogger)(configEnv, _db.dbs))).use(router.allowedMethods());
+  app.use((0, _koaBodyparser.default)()).use((0, _middleware.loggerMiddleware)((0, _logger.getLogger)(configEnv, _db.dbs))).use(router.allowedMethods());
   app.listen(port, () => logger.log("\u2705 The server is running at ".concat(protocol, "://").concat(hostIp, ":").concat(port, "/")), {
     meta: 'test'
   });

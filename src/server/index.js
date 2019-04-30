@@ -40,7 +40,6 @@ export async function start() {
 export function startServer() {
   logger.log('Starting Server')
   app.use(bodyParser())
-  .use(bodyParser())
   .use(loggerMiddleware(getLogger(configEnv, dbs)))
   .use(router.allowedMethods())
     app.listen(port, () => logger.log(`✅ The server is running at ${protocol}://${hostIp}:${port}/`), {meta: 'test'})

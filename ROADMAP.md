@@ -8,7 +8,7 @@
 <b>.0.0.4</b> - Bug fixes (added range endpoint)  
 <b>.0.0.5</b> - Fixed issues with range command  
 <b>.0.0.6</b> - Add Redis PUB/SUB support for handling real time queue events, include Koa middleware
-<b>.0.0.7</b> - Bug fix for missing config when running as middleware, typo fix in documentation
+<b>.0.0.7</b> - Bug fix for missing config when running as middleware, typo fixes in documentation
 <b>.0.0.8</b> - Clean up of exporting module correctly
 <b>.0.0.9</b> - Documentation Examples for middleware cleanup
 
