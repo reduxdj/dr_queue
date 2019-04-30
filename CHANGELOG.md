@@ -29,5 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added Fix a configuration issue for exporting logger as middleware
 - Fixed an issue with documentation typo
 
-##### [.0.0.8] - 2019-04-27
+##### [.0.0.8] - 2019-04-29
 - Added middleware instance creation
+
+##### [.0.0.9] - 2019-04-29
+- Cleaned up examples, initializing examples for exported modules was wrong
+- Added images

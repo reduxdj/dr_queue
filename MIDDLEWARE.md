@@ -1,39 +1,59 @@
 ## Middleware
-Middleware for Koa 2.0
+Middleware for Koa ^2.0
 
 ### Guidelines
 
-Using Dr Queue as middleware is an option if you already have a webserver and want to connect the transport to you Redis cluster (or if you just want to send formatted log files to text files with or without Redis).
+Using Dr Queue as middleware is an option if you already have a webserver and want to connect the transport to your Redis connections (or if you just want to send formatted log files to text files with or without Redis).
 
 ### Getting Started
 
 To initialize the middleware logger, create an instance with a configuration object
 
+##### Example:
 ```
-import { Logger as LoggerUtil } from 'dr_queue
-const config = {
-  hostIp : "127.0.0.1",
-  appName: "queue",
-  timezone: "America/Los_Angeles",
-  hostname: "localhost",
+import {Logger as LoggerUtil} from 'dr_queue'
+import Koa from 'koa'
+import Router from 'koa-router'
+import bodyParser from 'koa-bodyparser'
+
+const config = require('config')
+const Logger = require('../out/logger').default
+const Koa = require('koa')
+const Router = require('koa-router')
+const bodyParser = require('koa-bodyparser')
+const moment = require('moment')
+
+const config  = {
+  hostIp : 127.0.0.1,
+  appName: queue,
+  timezone: America/Los_Angeles,
+  hostname: localhost,
   useWebsockets: true,
   errorIgnoreLevels: [401, 403],
-  transports :[
-      {
-      "filename": "./info.log",
-      "format": "txt"
+  transports:[{
+    filename: "./info.log",
+    format": "txt"
     },{
-      "filename": "./error.log",
-      "format": "txt"
-    }] //can be empty
+      filename: "./error.log",
+      format": "txt"
+    }]
 }
-export const Logger = LoggerUtil.init(config)
-```
 
-To pass redis connections, you can  supply a second argument, like this:
+const dbs = {
+  client: redisClient, // for the queue`
+  publisher: redisPublisher, // for the stream`
+}
 
-```
-LoggerUtil.init(config, {client: redisClient, publisher: redisPublisher})
+const LoggerUtil = LoggerUtil.init(config)
+const Logger = LoggerUtil.init(config, dbs)
+
+const app = new Koa()
+app.use(bodyParser())
+  .use(LoggerUtil.middleware(Logger))
+  .use(router.allowedMethods())
+  .use(router.routes())
+  app.listen(port, () => Logger.log(`✅ The server is running at ${protocol}://${hostIp}:${port}/`), {meta: 'test'})
+return app
 ```
 
 
@@ -59,5 +79,5 @@ const app = new Koa()
 app.use(Logger)
 ```
 
-Then setup your logging configuration to support the redisClients and redisPublishers.
+Then setup your logging configuration to support the Redis clients and Redis publishers.
 (See [Logging](https://github.com/reduxdj/dr_queue/blob/master/LOGGING.md))

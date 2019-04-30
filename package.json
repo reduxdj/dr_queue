@@ -1,7 +1,7 @@
 {
   "name": "dr_queue",
-  "version": "0.0.8",
-  "description": "This is Dr. Queue - A REST interface and Redis Queue manager packaged with koa2 to observe and handle queues",
+  "version": "0.0.9",
+  "description": "This is Dr. Queue - A REST interface and Redis Queue manager with middlware support for Koa ^2.0.",
   "main": "out/index.js",
   "scripts": {
     "clean": "rm -rf out/*",
@@ -74,5 +74,5 @@
     "semi": false,
     "printWidth": 110
   },
-  "keywords": []
+  "keywords": ["Logging", "Winston", "Koa", "Middleware" ]
 }
