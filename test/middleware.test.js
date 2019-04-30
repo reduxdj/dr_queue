@@ -1,12 +1,15 @@
 const supertest = require('supertest')
 const {should, assert} = require('chai')
-const app = require('./test_server')
+const {app} = require('./server')
 const {reset, lastOne, length} = require('../out/redis/db')
-
 /* eslint-disable */
-const {getLogger} = require('../out/logger')
+const moment = require('moment')
+const Router = require('koa-router')
 const {loggerMiddleware} = require('../out/middleware')
+const {port, protocol, hostIp} = { port: 8081, protocol: 'http', hostIp: '127.0.0.1'}
+const upTime = moment().format('MMMM Do YYYY, h:mm:ss a')
 const QUEUE_NAME = 'dev:queue'
+const {dbs} = require('../out/redis/db')
 
 should()
 
@@ -33,6 +36,7 @@ describe('Middleware Test', () => {
       .set('Authorization', 'Bearer Go')
       .set('Accept', 'application/json')
       .expect(200, async (err, res) => {
+        // console.log(await lastOne(QUEUE_NAME))
         assert.strictEqual((await lastOne(QUEUE_NAME)).level, 'info')
         done()
       })
@@ -44,7 +48,7 @@ describe('Middleware Test', () => {
       .set('Accept', 'application/json')
       .send({ username: 'Pokemon'})
       .expect(200, async (err, res) => {
-        console.log(await lastOne(QUEUE_NAME))
+        // console.log(await lastOne(QUEUE_NAME))
         assert.strictEqual((await lastOne(QUEUE_NAME)).metadata.username, 'Pokemon')
         done()
       })

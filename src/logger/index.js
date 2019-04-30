@@ -1,8 +1,7 @@
 import winston from 'winston'
 import moment from 'moment-timezone'
 import chalk from 'chalk'
-import config from 'config'
-import {dbs, publish, push} from '../redis/db'
+import {dbs, publish, push, setPublisher, setClient} from '../redis/db'
 
 export const COLORS = {
   gray: 'gray',
@@ -14,6 +13,7 @@ export const COLORS = {
   whiteBright: 'whiteBright'
 }
 
+
 const alignColorsAndTime = winston.format.combine(
     winston.format.colorize({
       all:true
@@ -24,7 +24,7 @@ const alignColorsAndTime = winston.format.combine(
     /*eslint-disable */
     winston.format.printf(
       ({metadata = {}, env = {}, label, level, hostIp, hostname, appName, timestamp, message, timezone}, ...info) =>
-        ` ${env}:${chalk[COLORS.gray](hostname)}:${appName}:${hostIp}:${level} UTC: ${chalk[COLORS.magentaBright](moment(timestamp))} ${timezone}: ${chalk[COLORS.yellowBright](moment(info.timestamp).tz(timezone).format('hh:mm a'))} ${chalk[COLORS.whiteBright](message)} ${JSON.stringify({env, hostIp, appName, timestamp, ...info, ...metadata})}`
+        ` ${env}:${chalk[COLORS.gray](hostname)}:${appName}:${hostIp}:${level} UTC: ${chalk[COLORS.magentaBright](moment(timestamp))} ${timezone}: ${chalk[COLORS.yellowBright](moment(info.timestamp).tz(timezone).format('hh:mm a'))} ${chalk[COLORS.whiteBright](message)} ${JSON.stringify({env, hostIp, appName, timestamp, ...info, ...(metadata && typeof metadata === 'object' ? metadata : {metadata})})}`
 
     )
     /*eslint-enable */
@@ -34,7 +34,7 @@ function createTransport({filename, level}) {
   return new winston.transports.File({filename, level})
 }
 
-function createLogger(transports) {
+function createLogger(transports = []) {
   return winston.createLogger({
     level: "info",
     transports: (transports ? transports.map(createTransport) : [
@@ -66,6 +66,9 @@ export class Logger {
       this.client = client
     }
   }
+  static getLogger(config = {}, redisConnections = {}) {
+    return new Logger(config, redisConnections)
+  }
   getInoreLevels() {
     return this.errorIgnoreLevels
   }
@@ -85,6 +88,9 @@ export class Logger {
     if (this.client)
       push(`${this.env}:${this.appName}`, payload)
   }
+  info(message = '', metadata ={}) {
+    this.log(message, metadata)
+  }
   error (message= '', metadata = {}) {
     const payload = {
       env: this.env,
@@ -96,14 +102,26 @@ export class Logger {
       message,
       metadata
     }
-    logger
-      .error(payload)
+    logger.error(payload)
     if (this.publisher)
       publish(`${this.env}:${this.appName}`, payload)
     if (this.client)
       push(`${this.env}:${this.appName}`, payload)
   }
-}
-export default new Logger(config.get('env'))
+  setRedisConnections({client, publisher}) {
+    if (publisher) {
+      setPublisher(publisher)
+      this.publisher = publisher
 
-export const getLogger = (config, redisConnections) => new Logger(config, redisConnections)
+    }
+    if (client) {
+      setClient(client)
+      this.client = client
+
+    }
+  }
+}
+export default Logger
+export const getLogger = (config, redisConnections) => {
+  return new Logger(config, redisConnections)
+}

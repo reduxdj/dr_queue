@@ -1,12 +1,12 @@
 {
   "name": "dr_queue",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "This is Dr. Queue - A REST interface and Redis Queue manager packaged with koa2 to observe and handle queues",
-  "main": "out/server.js",
+  "main": "out/index.js",
   "scripts": {
     "clean": "rm -rf out/*",
     "lint": "./node_modules/.bin/eslint src/*.js",
-    "start": "npm run clean && npm run build && HOSTNAME='localhost' && HOST_IP='127.0.0.1' && node --trace-warnings out/server.js",
+    "start": "npm run clean && npm run build && HOSTNAME='localhost' && HOST_IP='127.0.0.1' && node --trace-warnings out/index.js  --server",
     "subscriber": "npm run clean && npm run build && HOSTNAME='localhost' && HOST_IP='127.0.0.1' && node --trace-warnings out/redis/subscriber.js --channel $CHANNEL",
     "build": "bin/build",
     "mocha": "NODE_ENV=test && npm run build && ./node_modules/.bin/mocha test/*.js",

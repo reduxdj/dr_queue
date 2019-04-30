@@ -1,9 +1,9 @@
 import config from 'config'
-import Logger from '../logger'
+import {logger} from '../server'
 import createConnection from '../redis'
 import {argv} from 'process'
 
-const {redis} = config.get('db')
+const {redis} = (config && config.has('db') && config.get('db') || {})
 const index = argv.indexOf('--channel')
 const isInScriptMode = argv.find((item) => item.includes('subscriber'))
 const channel = argv[index+1]
@@ -23,5 +23,5 @@ export async function listen(channel) {
 }
 if (isInScriptMode) {
   listen(channel)
-  Logger.log(`Subscriber Started ⏰ on ${channel}`)
+  logger.log(`Subscriber Started ⏰ on ${channel}`)
 }

@@ -48,15 +48,15 @@ const dbs = {// holds a reference to all our clients in a map
 exports.dbs = dbs;
 
 function setPublisher(publisher) {
-  dbs[publisher] = publisher;
+  dbs['publisher'] = publisher;
 }
 
 function setSubscriber(subcriber) {
-  dbs[subcriber] = subcriber;
+  dbs['subcriber'] = subcriber;
 }
 
 function setClient(client) {
-  dbs[client] = client;
+  dbs['client'] = client;
 }
 
 const DB_CONSTANTS = {
@@ -251,6 +251,6 @@ function publish(channel, val) {
       createdAt: createdAt
     });
 
-    dbs.publisher.publish(channel, JSON.stringify(data), err => err ? reject() : resolve(data));
+    dbs.publisher && dbs.publisher.publish(channel, JSON.stringify(data), err => err ? reject() : resolve(data));
   });
 }

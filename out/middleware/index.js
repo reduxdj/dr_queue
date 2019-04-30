@@ -19,9 +19,6 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-const _config$get = _config.default.get('credentials'),
-      token = _config$get.token;
-
 function getToken(_ref) {
   let header = _ref.request.header,
       token = _ref.query.token;
@@ -46,6 +43,9 @@ function rolesRequiredMiddleware(_x, _x2) {
 function _rolesRequiredMiddleware() {
   _rolesRequiredMiddleware = _asyncToGenerator(function* (ctx, next) {
     try {
+      const _config$get = _config.default.get('credentials'),
+            token = _config$get.token;
+
       const userToken = getToken(ctx);
       if (!userToken) ctx.throw(401);
 

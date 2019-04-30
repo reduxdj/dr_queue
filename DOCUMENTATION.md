@@ -11,24 +11,24 @@ Queues, are assumed to be going left to right.
 This is a brand new repo, it's getting tests soon.
 Also, websocket publish/subscribe framework is coming soon too.
 
-###Why?
+### Why?
 Why This? Reasoning about queues is not easy, especially because we think of them like arrays, but Redis can make this confusing, especially with its indices in its commands.
 
-###Documentation
+### Documentation
 Just like REST interfaces, GET requests are non destructive read operations of the queue,
 while POST commands mutate the list
 
-####Logging
+#### Logging
 [Logging](https://github.com/redux_dj/dr_queue/LOGGING.md)
 
 ####Authentication - Roll Your Own
 [Authentication](https://github.com/redux_dj/dr_queue/AUTHENTICATION.md)
 
 
-###Examples
+### Examples
 [Examples](https://github.com/redux_dj/dr_queue/EXAMPLES.md)
 
-###Getting Started
+### Getting Started
 The app is written in es6, a babel transpiled entry point is added to /out directory
 
 To build app:

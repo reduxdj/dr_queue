@@ -8,15 +8,15 @@ export const dbs = {
 }
 
 export function setPublisher(publisher) {
-  dbs[publisher] = publisher
+  dbs['publisher'] = publisher
 }
 
 export function setSubscriber(subcriber) {
-  dbs[subcriber] = subcriber
+  dbs['subcriber'] = subcriber
 }
 
 export function setClient(client) {
-  dbs[client] = client
+  dbs['client'] = client
 }
 
 const DB_CONSTANTS = {
@@ -169,7 +169,7 @@ export function publish(channel, val) {
     return new Promise((resolve, reject) => {
       const createdAt = new Date()
       const data = { ...val, createdAt }
-      dbs.publisher.publish(
+      dbs.publisher && dbs.publisher.publish(
         channel,
         JSON.stringify(data),
         (err) => err

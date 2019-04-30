@@ -11,8 +11,6 @@ var _momentTimezone = _interopRequireDefault(require("moment-timezone"));
 
 var _chalk = _interopRequireDefault(require("chalk"));
 
-var _config = _interopRequireDefault(require("config"));
-
 var _db = require("../redis/db");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -61,7 +59,9 @@ _winston.default.format.printf(function (_ref) {
     hostIp: hostIp,
     appName: appName,
     timestamp: timestamp
-  }, info, metadata)));
+  }, info, metadata && typeof metadata === 'object' ? metadata : {
+    metadata: metadata
+  })));
 })
 /*eslint-enable */
 );
@@ -75,7 +75,8 @@ function createTransport(_ref2) {
   });
 }
 
-function createLogger(transports) {
+function createLogger() {
+  let transports = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   return _winston.default.createLogger({
     level: "info",
     transports: (transports ? transports.map(createTransport) : [new _winston.default.transports.File({
@@ -122,6 +123,12 @@ class Logger {
     }
   }
 
+  static getLogger() {
+    let config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    let redisConnections = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    return new Logger(config, redisConnections);
+  }
+
   getInoreLevels() {
     return this.errorIgnoreLevels;
   }
@@ -144,6 +151,12 @@ class Logger {
     if (this.client) (0, _db.push)("".concat(this.env, ":").concat(this.appName), payload);
   }
 
+  info() {
+    let message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+    let metadata = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    this.log(message, metadata);
+  }
+
   error() {
     let message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
     let metadata = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -162,14 +175,29 @@ class Logger {
     if (this.client) (0, _db.push)("".concat(this.env, ":").concat(this.appName), payload);
   }
 
+  setRedisConnections(_ref4) {
+    let client = _ref4.client,
+        publisher = _ref4.publisher;
+
+    if (publisher) {
+      (0, _db.setPublisher)(publisher);
+      this.publisher = publisher;
+    }
+
+    if (client) {
+      (0, _db.setClient)(client);
+      this.client = client;
+    }
+  }
+
 }
 
 exports.Logger = Logger;
-
-var _default = new Logger(_config.default.get('env'));
-
+var _default = Logger;
 exports.default = _default;
 
-const getLogger = (config, redisConnections) => new Logger(config, redisConnections);
+const getLogger = (config, redisConnections) => {
+  return new Logger(config, redisConnections);
+};
 
 exports.getLogger = getLogger;

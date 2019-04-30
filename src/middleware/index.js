@@ -1,6 +1,5 @@
 import config from 'config'
 
-const {token} = config.get('credentials')
 
 export function getToken({ request: { header }, query: { token }} ) {
   if (header && header.authorization) {
@@ -19,6 +18,7 @@ export function getToken({ request: { header }, query: { token }} ) {
 
 export default async function rolesRequiredMiddleware(ctx, next, ...args) {
   try {
+    const {token} = config.get('credentials')
     const userToken = getToken(ctx)
     if (!userToken)
       ctx.throw(401)

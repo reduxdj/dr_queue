@@ -7,7 +7,7 @@ exports.default = void 0;
 
 var _redis = _interopRequireDefault(require("redis"));
 
-var _Logger = _interopRequireDefault(require("../Logger"));
+var _index = require("../server/index");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21,7 +21,7 @@ const redisRetryStrategy = (_ref) => {
   if (attempt < 8) {
     const nextDelay = Math.min(attempt * 500, 3000);
 
-    _Logger.default.log("Reattempting Redis connection after ".concat(nextDelay, "ms"));
+    _index.logger.log("Reattempting Redis connection after ".concat(nextDelay, "ms"));
 
     return nextDelay;
   }
@@ -39,14 +39,14 @@ function () {
         port = _ref2.port,
         name = _ref2.name;
     return new Promise((resolve, reject) => {
-      _Logger.default.log("Attempting to connect ".concat(name, " to //").concat(host, ":").concat(port)); //eslint-disable-line
+      _index.logger.log("Attempting to connect ".concat(name, " to //").concat(host, ":").concat(port)); //eslint-disable-line
 
 
       redisClient = _redis.default.createClient({
         url: "//".concat(host, ":").concat(port),
         retry_strategy: redisRetryStrategy
       }).on('connect', info => {
-        _Logger.default.log("//".concat(host, ":").concat(port, " Redis Connected")); //eslint-disable-line
+        _index.logger.log("//".concat(host, ":").concat(port, " Redis Connected")); //eslint-disable-line
 
 
         resolve({
@@ -54,7 +54,7 @@ function () {
           redisClient: redisClient
         });
       }).on('error', err => {
-        _Logger.default.log('Redis disconnected'); //eslint-disable-line
+        _index.logger.log('Redis disconnected'); //eslint-disable-line
 
 
         reject(err);

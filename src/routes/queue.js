@@ -14,7 +14,7 @@ import {
   sRange,
   pop,
 } from '../redis/db'
-import {Logger} from '../server'
+import {logger} from '../server'
 import rolesRequired from '../middleware'
 
 const api = 'queue'
@@ -30,7 +30,7 @@ router.post('/:queueName/reset',
       data: await reset(ctx.params.queueName)
     }
   } catch (err) {
-    Logger.error(err)
+    logger.error(err)
     ctx.throw(422)
   }
 })
@@ -42,7 +42,7 @@ router.get('/:queueName/length',
       data: await length(ctx.params.queueName)
     }
   } catch (err) {
-    Logger.error(err)
+    logger.error(err)
     ctx.throw(422)
   }
 })
@@ -55,7 +55,7 @@ router.post('/:queueName/pop',
       data: await pop(ctx.params.queueName)
     }
   } catch (err) {
-    Logger.error(err)
+    logger.error(err)
     ctx.throw(422)
   }
 })
@@ -68,7 +68,7 @@ router.post('/:queueName/pop_left',
       data: await popLeft(ctx.params.queueName)
     }
   } catch (err) {
-    Logger.error(err)
+    logger.error(err)
     ctx.throw(422)
   }
 })
@@ -81,7 +81,7 @@ router.post('/:queueName/pop_right',
       data: await popRight(ctx.params.queueName)
     }
   } catch (err) {
-    Logger.error(err)
+    logger.error(err)
     ctx.throw(422)
   }
 })
@@ -95,7 +95,7 @@ router.get('/:queueName/last',
       : Promise.resolve({})
     }
   } catch (err) {
-    Logger.error(err)
+    logger.error(err)
     ctx.throw(422)
   }
 })
@@ -109,7 +109,7 @@ router.get('/:queueName/first',
       : Promise.resolve({})
     }
   } catch (err) {
-    Logger.error(err)
+    logger.error(err)
     ctx.throw(422)
   }
 })
@@ -123,7 +123,7 @@ router.get('/:queueName/first/:count',
         : Promise.resolve({})
     }
   } catch (err) {
-    Logger.error(err)
+    logger.error(err)
     ctx.throw(422)
   }
 })
@@ -137,7 +137,7 @@ router.get('/:queueName/last/:count',
       : Promise.resolve({})
     }
   } catch (err) {
-    Logger.error(err)
+    logger.error(err)
     ctx.throw(422)
   }
 })
@@ -149,7 +149,7 @@ router.post('/:queueName/push',
       data: await push(ctx.params.queueName, ctx.request.body)
     }
   } catch (err) {
-    Logger.error(err)
+    logger.error(err)
     ctx.throw(422)
   }
 })
@@ -161,7 +161,7 @@ router.post('/:queueName/push_left',
       data: await pushLeft(ctx.params.queueName, ctx.request.body)
     }
   } catch (err) {
-    Logger.error(err)
+    logger.error(err)
     ctx.throw(422)
   }
 })
@@ -173,7 +173,7 @@ router.post('/:queueName/push_right',
       data: await pushRight(ctx.params.queueName, ctx.request.body)
     }
   } catch (err) {
-    Logger.error(err)
+    logger.error(err)
     ctx.throw(422)
   }
 })
@@ -186,7 +186,7 @@ router.get('/:queueName/range/:start/:stop',
       data: await sRange(ctx.params.queueName, ctx.params.start, ctx.params.stop)
     }
   } catch (err) {
-    Logger.error(err)
+    logger.error(err)
     ctx.throw(422)
   }
 })
@@ -200,7 +200,7 @@ router.get('/:queueName',
       data: await range(ctx.params.queueName, await length(ctx.params.queueName))
     }
   } catch (err) {
-    Logger.error(err)
+    logger.error(err)
     ctx.throw(422)
   }
 })

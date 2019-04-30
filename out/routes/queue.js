@@ -32,7 +32,7 @@ function () {
         data: yield (0, _db.reset)(ctx.params.queueName)
       };
     } catch (err) {
-      _server.Logger.error(err);
+      _server.logger.error(err);
 
       ctx.throw(422);
     }
@@ -52,7 +52,7 @@ function () {
         data: yield (0, _db.length)(ctx.params.queueName)
       };
     } catch (err) {
-      _server.Logger.error(err);
+      _server.logger.error(err);
 
       ctx.throw(422);
     }
@@ -72,7 +72,7 @@ function () {
         data: yield (0, _db.pop)(ctx.params.queueName)
       };
     } catch (err) {
-      _server.Logger.error(err);
+      _server.logger.error(err);
 
       ctx.throw(422);
     }
@@ -92,7 +92,7 @@ function () {
         data: yield (0, _db.popLeft)(ctx.params.queueName)
       };
     } catch (err) {
-      _server.Logger.error(err);
+      _server.logger.error(err);
 
       ctx.throw(422);
     }
@@ -112,7 +112,7 @@ function () {
         data: yield (0, _db.popRight)(ctx.params.queueName)
       };
     } catch (err) {
-      _server.Logger.error(err);
+      _server.logger.error(err);
 
       ctx.throw(422);
     }
@@ -132,7 +132,7 @@ function () {
         data: (yield (0, _db.hasNext)(ctx.params.queueName)) ? yield (0, _db.last)(ctx.params.queueName) : Promise.resolve({})
       };
     } catch (err) {
-      _server.Logger.error(err);
+      _server.logger.error(err);
 
       ctx.throw(422);
     }
@@ -152,7 +152,7 @@ function () {
         data: (yield (0, _db.hasNext)(ctx.params.queueName)) ? yield (0, _db.first)(ctx.params.queueName) : Promise.resolve({})
       };
     } catch (err) {
-      _server.Logger.error(err);
+      _server.logger.error(err);
 
       ctx.throw(422);
     }
@@ -172,7 +172,7 @@ function () {
         data: (yield (0, _db.hasNext)(ctx.params.queueName)) ? yield (0, _db.first)(ctx.params.queueName, ctx.params.count) : Promise.resolve({})
       };
     } catch (err) {
-      _server.Logger.error(err);
+      _server.logger.error(err);
 
       ctx.throw(422);
     }
@@ -192,7 +192,7 @@ function () {
         data: (yield (0, _db.hasNext)(ctx.params.queueName)) ? yield (0, _db.last)(ctx.params.queueName, ctx.params.count) : Promise.resolve({})
       };
     } catch (err) {
-      _server.Logger.error(err);
+      _server.logger.error(err);
 
       ctx.throw(422);
     }
@@ -212,7 +212,7 @@ function () {
         data: yield (0, _db.push)(ctx.params.queueName, ctx.request.body)
       };
     } catch (err) {
-      _server.Logger.error(err);
+      _server.logger.error(err);
 
       ctx.throw(422);
     }
@@ -232,7 +232,7 @@ function () {
         data: yield (0, _db.pushLeft)(ctx.params.queueName, ctx.request.body)
       };
     } catch (err) {
-      _server.Logger.error(err);
+      _server.logger.error(err);
 
       ctx.throw(422);
     }
@@ -252,7 +252,7 @@ function () {
         data: yield (0, _db.pushRight)(ctx.params.queueName, ctx.request.body)
       };
     } catch (err) {
-      _server.Logger.error(err);
+      _server.logger.error(err);
 
       ctx.throw(422);
     }
@@ -272,7 +272,7 @@ function () {
         data: yield (0, _db.sRange)(ctx.params.queueName, ctx.params.start, ctx.params.stop)
       };
     } catch (err) {
-      _server.Logger.error(err);
+      _server.logger.error(err);
 
       ctx.throw(422);
     }
@@ -292,7 +292,7 @@ function () {
         data: yield (0, _db.range)(ctx.params.queueName, (yield (0, _db.length)(ctx.params.queueName)))
       };
     } catch (err) {
-      _server.Logger.error(err);
+      _server.logger.error(err);
 
       ctx.throw(422);
     }

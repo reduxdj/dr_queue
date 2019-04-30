@@ -24,3 +24,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added tests for publish functions
 - Fixed some documentation typos
 - Changed roadmap estimations based on availability
+
+##### [.0.0.7] - 2019-04-27
+- Added Fix a configuration issue for exporting logger as middleware
+- Fixed an issue with documentation typo
+
+##### [.0.0.8] - 2019-04-27
+- Added middleware instance creation
