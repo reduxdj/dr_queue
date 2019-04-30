@@ -3,11 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.listen = listen;
+exports.default = listen;
 
 var _config = _interopRequireDefault(require("config"));
 
-var _server = require("../server");
+var _index = require("../server/index");
 
 var _redis = _interopRequireDefault(require("../redis"));
 
@@ -48,20 +48,21 @@ function _listen() {
         /* eslint-disable */
 
 
-        redisClient.on('message', (channel, message) => Logger.log('messageReceived', {
-          channel: channel,
-          message: message
-        }));
-        redisClient.subscribe(channel);
+        redisClient.on('pmessage', (channel, name, message) => {
+          const data = JSON.parse(message);
+
+          _index.logger.logSilent("messageReceived", data); // will not publish messages back to itself
+
+
+          resolve(data);
+        });
+        redisClient.psubscribe(channel);
       });
 
       return function (_x2) {
         return _ref2.apply(this, arguments);
       };
-    }()).then(() => {
-      resolve(message);
-    });
-    /* eslint-enable */
+    }());
   });
   return _listen.apply(this, arguments);
 }
@@ -69,5 +70,5 @@ function _listen() {
 if (isInScriptMode) {
   listen(channel);
 
-  _server.logger.log("Subscriber Started \u23F0 on ".concat(channel));
+  _index.logger.log("Subscriber Started \u23F0 on ".concat(channel));
 }

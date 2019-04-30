@@ -95,7 +95,8 @@ let logger;
 
 class Logger {
   constructor(_ref3) {
-    let appName = _ref3.appName,
+    let env = _ref3.env,
+        appName = _ref3.appName,
         timezone = _ref3.timezone,
         hostIp = _ref3.hostIp,
         hostname = _ref3.hostname,
@@ -104,7 +105,8 @@ class Logger {
         transports = _ref3.transports;
     let redisConnections = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     logger = createLogger(transports);
-    this.env = process.NODE_ENV || 'dev', this.appName = appName;
+    this.env = env || 'dev';
+    this.appName = appName;
     this.timezone = timezone;
     this.hostIp = process.env.HOST_IP || hostIp;
     this.hostname = process.env.HOSTNAME || hostname;
@@ -131,6 +133,22 @@ class Logger {
 
   getInoreLevels() {
     return this.errorIgnoreLevels;
+  }
+
+  logSilent() {
+    let message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+    let metadata = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    const payload = {
+      env: this.env,
+      hostIp: this.hostIp,
+      hostname: this.hostname,
+      appName: this.appName,
+      timezone: this.timezone,
+      level: 'info',
+      message: message,
+      metadata: metadata
+    };
+    logger.log(payload);
   }
 
   log() {

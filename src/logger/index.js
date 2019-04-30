@@ -13,7 +13,6 @@ export const COLORS = {
   whiteBright: 'whiteBright'
 }
 
-
 const alignColorsAndTime = winston.format.combine(
     winston.format.colorize({
       all:true
@@ -42,15 +41,15 @@ function createLogger(transports = []) {
       new winston.transports.File({ filename: 'info.log', level: 'info' }),
     ]).concat(new (winston.transports.Console)({
       format: winston.format.combine(winston.format.colorize(), alignColorsAndTime)
-      })),
+    })),
   })
 }
 let logger
 
 export class Logger {
-  constructor({appName, timezone, hostIp, hostname, errorIgnoreLevels = [], transports}, redisConnections = {}) {
+  constructor({env, appName, timezone, hostIp, hostname, errorIgnoreLevels = [], transports}, redisConnections = {}) {
     logger = createLogger(transports)
-    this.env = process.NODE_ENV || 'dev',
+    this.env = env || 'dev'
     this.appName = appName
     this.timezone = timezone
     this.hostIp = process.env.HOST_IP || hostIp
@@ -71,6 +70,18 @@ export class Logger {
   }
   getInoreLevels() {
     return this.errorIgnoreLevels
+  }
+  logSilent (message = '', metadata = {}) {
+    const payload = {
+    env: this.env,
+    hostIp: this.hostIp,
+    hostname: this.hostname,
+    appName: this.appName,
+    timezone: this.timezone,
+    level: 'info',
+    message,
+    metadata}
+    logger.log(payload)
   }
   log (message = '', metadata = {}) {
     const payload = {
@@ -117,7 +128,6 @@ export class Logger {
     if (client) {
       setClient(client)
       this.client = client
-
     }
   }
 }

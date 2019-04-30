@@ -13,13 +13,13 @@ router.post('/:channel',
 (ctx, next) => rolesRequired(ctx, next, 'admin', 'api'), async (ctx) => {
   try {
   const paths = (ctx.params.channel || '').split(':')
-  const [env, appName, resourceName, resourcKey, ...extraPaths] = paths
+  const [env, appName, resourceName, resourceKey, ...extraPaths] = paths
   if (!appName)
     throw('Error', 'Channel Name is undefined')
   const channelName = `${env}:${appName}`
     ctx.body = { ok: true,
       data: await publish(channelName,
-        { env, appName, resourceName, resourcKey, ...extraPaths, ...ctx.request.body })
+        { env, appName, resourceName, ts: new Date(), resourceKey, ...extraPaths, ...ctx.request.body })
     }
   } catch (err) {
     ctx.throw(422)

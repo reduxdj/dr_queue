@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Redis = exports.Logger = void 0;
+exports.Koa = exports.Redis = exports.Logger = void 0;
 
 var _server = require("./server");
 
@@ -13,17 +13,13 @@ var _logger = require("./logger");
 
 var _middleware = require("./middleware");
 
-var _db = require("./redis/db");
-
 var _redis = require("./redis");
+
+var _db = require("./redis/db");
 
 var _subscriber = _interopRequireDefault(require("./redis/subscriber"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 const isServer = _process.argv.find(item => item.includes('--server'));
 
@@ -41,12 +37,34 @@ const Logger = {
   middleware: _middleware.loggerMiddleware
 };
 exports.Logger = Logger;
-
-const Redis = _objectSpread({}, {
-  Dbs: _db.Dbs
-}, {
+const Redis = {
+  dbs: _db.dbs,
+  redisRetryStrategy: _redis.redisRetryStrategy,
   listen: _subscriber.default,
-  createRedisConnection: _redis.createRedisConnection
-});
-
+  createRedisConnection: _redis.createRedisConnection,
+  length: _db.length,
+  clearDelay: _db.clearDelay,
+  push: _db.push,
+  pop: _db.pop,
+  popLeft: _db.popLeft,
+  popRight: _db.popRight,
+  pushRight: _db.pushRight,
+  pushLeft: _db.pushLeft,
+  hasNext: _db.hasNext,
+  range: _db.range,
+  reset: _db.reset,
+  delay: _db.delay,
+  pause: _db.pause,
+  sRange: _db.sRange,
+  firstOne: _db.firstOne,
+  lastOne: _db.lastOne,
+  setPublisher: _db.setPublisher,
+  setClient: _db.setClient,
+  setSubscriber: _db.setSubscriber
+};
 exports.Redis = Redis;
+const Koa = {
+  startServer: _server.startServer,
+  start: _server.start
+};
+exports.Koa = Koa;

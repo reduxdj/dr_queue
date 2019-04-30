@@ -1,7 +1,7 @@
 import redis from 'redis'
 import {logger} from '../server/index'
 
-const redisRetryStrategy = ({ attempt }) => {
+export const redisRetryStrategy = ({ attempt }) => {
   if (attempt < 8) {
     const nextDelay = Math.min(attempt * 500, 3000)
     logger.log(`Reattempting Redis connection after ${nextDelay}ms`)

@@ -3,7 +3,7 @@ Middleware for Koa ^2.0
 
 ### Guidelines
 
-Using Dr Queue as middleware is an option if you already have a webserver and want to connect the transport to your Redis connections (or if you just want to send formatted log files to text files with or without Redis).
+Using Dr Queue as middleware is an option if you already have a webserver and want to connect the Redis transport to your Redis connections (or if you just want to send formatted log files to text files without Redis), that option is available too.
 
 ### Getting Started
 
@@ -31,11 +31,11 @@ const config  = {
   useWebsockets: true,
   errorIgnoreLevels: [401, 403],
   transports:[{
-    filename: "./info.log",
-    format": "txt"
+    filename: './info.log',
+    format: 'txt'
     },{
-      filename: "./error.log",
-      format": "txt"
+      filename: './error.log',
+      format: 'txt'
     }]
 }
 
@@ -63,7 +63,6 @@ export const Logger = LoggerUtil.init(config)
 Logger.setRedisConnections({ publisher: dbs.redisPublisher, client: dbs.redisClient })
 ```
 
-
 To add middleware you just add this line to your Koa middleware like this,
 
 ```js
@@ -80,4 +79,4 @@ app.use(Logger)
 ```
 
 Then setup your logging configuration to support the Redis clients and Redis publishers.
-(See [Logging](https://github.com/reduxdj/dr_queue/blob/master/LOGGING.md))
+(See [Logging](https://github.com/reduxdj/dr_queue/documentation/blob/master/LOGGING.md))

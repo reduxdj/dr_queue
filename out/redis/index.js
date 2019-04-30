@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports.default = exports.redisRetryStrategy = void 0;
 
 var _redis = _interopRequireDefault(require("redis"));
 
@@ -29,6 +29,7 @@ const redisRetryStrategy = (_ref) => {
   return undefined;
 };
 
+exports.redisRetryStrategy = redisRetryStrategy;
 let redisClient;
 
 const createRedisConnection =

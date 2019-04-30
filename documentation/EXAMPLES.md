@@ -109,4 +109,4 @@ curl -X POST \
   -H 'Authorization: Bearer Go' \
   -H 'Content-Type: application/json'
 ```
-See: [(PubSub)](https://github.com/reduxdj/dr_queue/blob/master/EXAMPLES.md)
+See: [(PubSub)](https://github.com/reduxdj/dr_queue/blob/master/documentation/EXAMPLES.md)

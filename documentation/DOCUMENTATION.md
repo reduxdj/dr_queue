@@ -19,14 +19,14 @@ Just like REST interfaces, GET requests are non destructive read operations of t
 while POST commands mutate the list
 
 #### Logging
-[Logging](https://github.com/redux_dj/dr_queue/LOGGING.md)
+[Logging](https://github.com/redux_dj/dr_queue/documentation/LOGGING.md)
 
 ####Authentication - Roll Your Own
-[Authentication](https://github.com/redux_dj/dr_queue/AUTHENTICATION.md)
+[Authentication](https://github.com/redux_dj/dr_queue/documentation/AUTHENTICATION.md)
 
 
 ### Examples
-[Examples](https://github.com/redux_dj/dr_queue/EXAMPLES.md)
+[Examples](https://github.com/redux_dj/dr_queue/documentation/EXAMPLES.md)
 
 ### Getting Started
 The app is written in es6, a babel transpiled entry point is added to /out directory
@@ -45,6 +45,6 @@ npm start
 
 ###License
 
-[MIT](https://github.com/redux_dj/dr_queue/EXAMPLES.md)
+[MIT](https://github.com/redux_dj/dr_queue/documentation/EXAMPLES.md)
 
 When using the Atom or other GitHub logos, be sure to follow the [GitHub logo guidelines](https://github.com/logos).

@@ -43,7 +43,7 @@ function () {
             env = _paths[0],
             appName = _paths[1],
             resourceName = _paths[2],
-            resourcKey = _paths[3],
+            resourceKey = _paths[3],
             extraPaths = _paths.slice(4);
 
       if (!appName) throw 'Error', 'Channel Name is undefined';
@@ -54,7 +54,8 @@ function () {
           env: env,
           appName: appName,
           resourceName: resourceName,
-          resourcKey: resourcKey
+          ts: new Date(),
+          resourceKey: resourceKey
         }, extraPaths, ctx.request.body))
       };
     } catch (err) {

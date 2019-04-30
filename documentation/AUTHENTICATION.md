@@ -1,4 +1,4 @@
-###Authentication - Roll Your Own
+### Authentication - Roll Your Own
 
 An example middleware has been included which can be implemented with
 Redis or your database, another good way to setup authentication is with
@@ -22,4 +22,4 @@ For example, We use a VPN for all our servers, and find
 that taking any authentication duties away from Redis as authentication
 is done best at the infrastructure level.
 
-See: [(Roadmap)](https://github.com/reduxdj/dr_queue/blob/master/ROADMAP.md)
+See: [(Roadmap)](https://github.com/reduxdj/dr_queue/blob/master/documentation/ROADMAP.md)
