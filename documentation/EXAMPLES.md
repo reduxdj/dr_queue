@@ -93,14 +93,7 @@ curl -X GET \
   -H 'Content-Type: application/json'
 ```
 
-<sub>
-Note: Range returns a subset of the list from left to right
-The index is zero based, and the amount of items
-is equal to the stop minus the start index (if there's enough get items in the list to return).
-This is similar to Python's range command and unlike Redis' native
-range command, which includes the last stop index.
-</sub>
-
+<b>Note:</b> Range returns a subset of the list from left to right The index is zero based, and the amount of items is equal to the stop minus the start index (if there's enough get items in the list to return). This is similar to Python's range command and unlike Redis' native range command, which includes the last stop index.
 
 To publish into the channel:
 ```sh

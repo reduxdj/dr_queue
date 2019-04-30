@@ -12,12 +12,13 @@
 <b>.0.0.8</b> - Clean up of exporting module correctly
 <b>.0.0.9</b> - Documentation Examples for middleware cleanup
 <b>.0.1.0</b> - Wildcard channel streaming examples
+<b>.0.1.1</b> - Documentation link fixes
 
 #### Future
-<b>.0.1.1</b> - Create proper function wrapper for rolesRequired middleware
-<b>.0.1.2</b> - (June 2019) Create CLI tool, add jsDoc and some visual infographics to documentation
-<b>.0.1.3</b> - Add Elastic stream support to collate messages to elastic  
-<b>.0.1.4</b> - Adding support for Express and other server middlewares  
-<b>.0.1.5</b> - (Summer 2019) Add ApolloClient interface middleware See: [Apollo Client](https://github.com/apollographql/apollo-client)  
+<b>.0.1.2</b> - Create proper function wrapper for rolesRequired middleware
+<b>.0.1.3</b> - (June 2019) Create CLI tool, add jsDoc and some visual infographics to documentation
+<b>.0.1.4</b> - Add Elastic stream support to collate messages to elastic  
+<b>.0.1.5</b> - Adding support for Express and other server middlewares  
+<b>.0.1.6</b> - (Summer 2019) Add ApolloClient interface middleware See: [Apollo Client](https://github.com/apollographql/apollo-client)  
 <b>.0.1.7</b> - (June 2019) Create a web interface to display, filter and search log messages (as a separate companion app)  
 <b>.0.2.0</b> - (Fall 2019) Official Beta Release  

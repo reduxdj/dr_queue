@@ -17,26 +17,26 @@ Add middleware with Redis connections to handle aggregation through streams and 
 Reasoning about what's in your queue is not easy, Dr Queue provides clear introspection to find what's in your queue.
 
 #### Small Disclaimer
-We're using this module in production, but as we have been breaking this out of a functioning app there's been a few issues we've been discovering, While we don't see many changes to the underlying API some of the locations of modules might get moved around a bit as we refactor a few components. In making a tool usable for the general public while specific enough for our needs, there's always a few considerations to make.
+We're using this module in production, but as we have been breaking this out of a functioning app there's been a few issues we've been discovering. While we don't expect to see many changes to the underlying API some of the locations of modules might get moved around a bit. In making a tool usable for the general public while specific enough for our needs, there's always a few considerations to make.
 
 #### Documentation
 Just like REST interfaces, GET requests are non-destructive read operations of the queue, while POST commands mutate the list, either appending to it, removing an item, or resetting (removing the entire list).
 
-- [CURL Examples](https://github.com/reduxdj/dr_queue/blob/master/EXAMPLES.md)
+- [CURL Examples](https://github.com/reduxdj/dr_queue/blob/master/documentation/EXAMPLES.md)
 
-- [Logging](https://github.com/reduxdj/dr_queue/blob/master/LOGGING.md)
+- [Logging](https://github.com/reduxdj/dr_queue/blob/master/documentation/LOGGING.md)
 
-- [Authentication](https://github.com/reduxdj/dr_queue/blob/master/AUTHENTICATION.md)
+- [Authentication](https://github.com/reduxdj/dr_queue/blob/master/documentation/AUTHENTICATION.md)
 
-- [PubSub](https://github.com/reduxdj/dr_queue/blob/master/PUBSUB.md)
+- [PubSub](https://github.com/reduxdj/dr_queue/blob/master/documentation/PUBSUB.md)
 
-- [Workers](https://github.com/reduxdj/dr_queue/blob/master/WORKERS.md)
+- [Workers](https://github.com/reduxdj/dr_queue/blob/master/documentation/WORKERS.md)
 
-- [Middleware](https://github.com/reduxdj/dr_queue/blob/master/MIDDLEWARE.md)
+- [Middleware](https://github.com/reduxdj/dr_queue/blob/master/documentation/MIDDLEWARE.md)
 
-- [Roadmap](https://github.com/reduxdj/dr_queue/blob/master/ROADMAP.md)
+- [Roadmap](https://github.com/reduxdj/dr_queue/blob/master/documentation/ROADMAP.md)
 
-- [Changelog](https://github.com/reduxdj/dr_queue/blob/master/CHANGELOG.md)
+- [Changelog](https://github.com/reduxdj/dr_queue/blob/master/documentation/CHANGELOG.md)
 
 #### To Start the Dr Queue Server:
 
