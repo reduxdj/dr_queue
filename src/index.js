@@ -1,6 +1,6 @@
 import {start, startServer} from './server'
 import {argv} from 'process'
-import {getLogger, setRedisConnections} from './logger'
+import {getLogger, setRedisConnections, colorFormatter, labelFormatter, printFormatter} from './logger'
 import {loggerMiddleware} from './middleware'
 import {createRedisConnection, redisRetryStrategy} from './redis'
 import {dbs,
@@ -31,9 +31,12 @@ if (isServer)
   start().then(startServer)
 
 export const Logger = {
-  init: (config, redisConnections) => getLogger(config, redisConnections),
+  init: (config, redisConnections, ...formatters) => getLogger(config, redisConnections, ...formatters),
   setRedisConnections: ({client, publisher}) => setRedisConnections({ client, publisher}),
-  middleware: loggerMiddleware
+  middleware: loggerMiddleware,
+  colorFormatter,
+  labelFormatter,
+  printFormatter
 }
 
 export const Redis = {

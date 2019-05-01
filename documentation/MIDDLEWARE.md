@@ -23,12 +23,11 @@ const Router = require('koa-router')
 const bodyParser = require('koa-bodyparser')
 const moment = require('moment')
 
-const config  = {
-  hostIp : 127.0.0.1,
-  appName: queue,
-  timezone: America/Los_Angeles,
-  hostname: localhost,
-  useWebsockets: true,
+const config = {
+  hostIp : '127.0.0.1',
+  appName: 'queue',
+  timezone: 'America/Los_Angeles',
+  hostname: 'localhost',
   errorIgnoreLevels: [401, 403],
   transports:[{
     filename: './info.log',
@@ -56,7 +55,6 @@ app.use(bodyParser())
 return app
 ```
 
-
 Or, you can set your connections later if necessary:
 ```js
 export const Logger = LoggerUtil.init(config)
@@ -76,6 +74,29 @@ Or, just pass the instance
 export const Logger = LoggerUtil.init(config)
 const app = new Koa()
 app.use(Logger)
+```
+
+
+If you need to do any filtering on your logger, or add or remove request properties like to remove passwords or other sensitive information, write a middleware function similar to the one like this one
+for Koa
+
+```js
+export function loggerMiddleware(Logger) {
+  const errorIgnoreLevels = Logger.getInoreLevels()
+  return async (ctx, next, ...args) => {
+    const start = new Date()
+    await next()
+    const ms = new Date() - start
+    const bypassError = !!(errorIgnoreLevels.find((status) => ctx.status === status))
+    const hasError = ctx.status >= 400 && !bypassError
+    const message = `${ctx.request.origin} ${chalk['magentaBright'](ctx.method)} ${chalk['blueBright'](ctx.status)} ${chalk['yellowBright'](ctx.request.url)}`
+    const payload = { ip: ctx.request.ip, query: {...ctx.query}, body: {...ctx.request.body}, userAgent: ctx.request.header['user-agent'], ms}
+    if (hasError)
+      Logger.error(message, payload)
+    else
+      Logger.log(message, payload)
+  }
+}
 ```
 
 Then setup your logging configuration to support the Redis clients and Redis publishers.

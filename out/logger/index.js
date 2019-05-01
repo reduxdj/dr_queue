@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getLogger = exports.default = exports.Logger = exports.COLORS = void 0;
+exports.getLogger = exports.default = exports.Logger = exports.printFormatter = exports.labelFormatter = exports.colorFormatter = exports.COLORS = void 0;
 
 var _winston = _interopRequireDefault(require("winston"));
 
@@ -30,13 +30,21 @@ const COLORS = {
 };
 exports.COLORS = COLORS;
 
-const alignColorsAndTime = _winston.default.format.combine(_winston.default.format.colorize({
+const colorFormatter = _winston.default.format.colorize({
   all: true
-}), _winston.default.format.label({
+});
+
+exports.colorFormatter = colorFormatter;
+
+const labelFormatter = _winston.default.format.label({
   label: 'console-logger'
-}),
+});
 /*eslint-disable */
-_winston.default.format.printf(function (_ref) {
+
+
+exports.labelFormatter = labelFormatter;
+
+const printFormatter = _winston.default.format.printf(function (_ref) {
   let _ref$metadata = _ref.metadata,
       metadata = _ref$metadata === void 0 ? {} : _ref$metadata,
       _ref$env = _ref.env,
@@ -54,17 +62,21 @@ _winston.default.format.printf(function (_ref) {
     info[_key - 1] = arguments[_key];
   }
 
-  return " ".concat(env, ":").concat(_chalk.default[COLORS.gray](hostname), ":").concat(appName, ":").concat(hostIp, ":").concat(level, " UTC: ").concat(_chalk.default[COLORS.magentaBright]((0, _momentTimezone.default)(timestamp)), " ").concat(timezone, ": ").concat(_chalk.default[COLORS.yellowBright]((0, _momentTimezone.default)(info.timestamp).tz(timezone).format('hh:mm a')), " ").concat(_chalk.default[COLORS.whiteBright](message), " ").concat(JSON.stringify(_objectSpread({
+  return " ".concat(env, ":").concat(_chalk.default[COLORS.gray](hostname), ":").concat(appName, ":").concat(hostIp, ":").concat(level, " UTC: ").concat(_chalk.default[COLORS.magentaBright]((0, _momentTimezone.default)(timestamp)), " ").concat(timezone, ": ").concat(_chalk.default[COLORS.yellowBright]((0, _momentTimezone.default)(info.timestamp).tz(timezone).format('hh:mm a')), " ").concat(_chalk.default[COLORS.whiteBright](message), " ").concat(_chalk.default[COLORS.gray](JSON.stringify(_objectSpread({
     env: env,
     hostIp: hostIp,
     appName: appName,
     timestamp: timestamp
   }, info, metadata && typeof metadata === 'object' ? metadata : {
     metadata: metadata
-  })));
-})
+  }))));
+});
 /*eslint-enable */
-);
+
+
+exports.printFormatter = printFormatter;
+
+const alignColorsAndTime = _winston.default.format.combine(colorFormatter, labelFormatter, printFormatter);
 
 function createTransport(_ref2) {
   let filename = _ref2.filename,
@@ -77,6 +89,11 @@ function createTransport(_ref2) {
 
 function createLogger() {
   let transports = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
+  for (var _len2 = arguments.length, formatters = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+    formatters[_key2 - 1] = arguments[_key2];
+  }
+
   return _winston.default.createLogger({
     level: "info",
     transports: (transports ? transports.map(createTransport) : [new _winston.default.transports.File({
@@ -86,7 +103,7 @@ function createLogger() {
       filename: 'info.log',
       level: 'info'
     })]).concat(new _winston.default.transports.Console({
-      format: _winston.default.format.combine(_winston.default.format.colorize(), alignColorsAndTime)
+      format: formatters.length > 0 ? _winston.default.format.combine(...formatters) : _winston.default.format.combine(alignColorsAndTime)
     }))
   });
 }
@@ -104,7 +121,12 @@ class Logger {
         errorIgnoreLevels = _ref3$errorIgnoreLeve === void 0 ? [] : _ref3$errorIgnoreLeve,
         transports = _ref3.transports;
     let redisConnections = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    logger = createLogger(transports);
+
+    for (var _len3 = arguments.length, formatters = new Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
+      formatters[_key3 - 2] = arguments[_key3];
+    }
+
+    logger = createLogger(transports, ...formatters);
     this.env = env || 'dev';
     this.appName = appName;
     this.timezone = timezone;
@@ -128,7 +150,12 @@ class Logger {
   static getLogger() {
     let config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     let redisConnections = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    return new Logger(config, redisConnections);
+
+    for (var _len4 = arguments.length, formatters = new Array(_len4 > 2 ? _len4 - 2 : 0), _key4 = 2; _key4 < _len4; _key4++) {
+      formatters[_key4 - 2] = arguments[_key4];
+    }
+
+    return new Logger(config, redisConnections, ...formatters);
   }
 
   getInoreLevels() {
@@ -214,8 +241,12 @@ exports.Logger = Logger;
 var _default = Logger;
 exports.default = _default;
 
-const getLogger = (config, redisConnections) => {
-  return new Logger(config, redisConnections);
+const getLogger = function getLogger(config, redisConnections) {
+  for (var _len5 = arguments.length, formatters = new Array(_len5 > 2 ? _len5 - 2 : 0), _key5 = 2; _key5 < _len5; _key5++) {
+    formatters[_key5 - 2] = arguments[_key5];
+  }
+
+  return new Logger(config, redisConnections, ...formatters);
 };
 
 exports.getLogger = getLogger;

@@ -1,4 +1,4 @@
-import config from 'config'
+import chalk from 'chalk'
 
 
 export function getToken({ request: { header }, query: { token }} ) {
@@ -16,22 +16,22 @@ export function getToken({ request: { header }, query: { token }} ) {
 // const foundRole = args.some(arg => roles.find(role => role === arg))
 // foundRole ? next() : ctx.throw(403, 'You are not Authorized')
 
-export default async function rolesRequiredMiddleware(ctx, next, ...args) {
-  try {
-    const {token} = config.get('credentials')
-    const userToken = getToken(ctx)
-    if (!userToken)
-      ctx.throw(401)
-    if (userToken !== token) {
-      ctx.user = { token }
+export function rolesRequiredMiddleware(credentials = {}) {
+  const {token} = credentials
+  return async (ctx, next, ...args) => {
+    try {
+      const userToken = getToken(ctx)
+      if (!userToken)
+        ctx.throw(401)
+      if (token && userToken !== token) {
+        ctx.user = { token }
+        ctx.throw(403, 'You are not Authorized')
+      }
+      return next()
+    } catch (err) {
       ctx.throw(403, 'You are not Authorized')
     }
-    return next()
-  } catch (err) {
-    //Logger.error(err)
-    ctx.throw(403, 'You are not Authorized')
   }
-  return undefined
 }
 
 export function loggerMiddleware(Logger) {
@@ -42,9 +42,11 @@ export function loggerMiddleware(Logger) {
     const ms = new Date() - start
     const bypassError = !!(errorIgnoreLevels.find((status) => ctx.status === status))
     const hasError = ctx.status >= 400 && !bypassError
+    const message = `${ctx.request.origin} ${chalk['magentaBright'](ctx.method)} ${chalk['blueBright'](ctx.status)} ${chalk['yellowBright'](ctx.request.url)}`
+    const payload = { url: ctx.request.url, ip: ctx.request.ip, query: {...ctx.query}, body: {...ctx.request.body}, userAgent: ctx.request.header['user-agent'], ms}
     if (hasError)
-      Logger.error(`${ctx.request.origin} ${ctx.method} ${ctx.status} ${ctx.request.path} `, {...ctx.request.body, ms: ms})
+      Logger.error(message, payload)
     else
-      Logger.log(`${ctx.request.origin} ${ctx.method} ${ctx.status} ${ctx.request.path} `, {...ctx.request.body, ms: ms})
+      Logger.log(message, payload)
   }
 }

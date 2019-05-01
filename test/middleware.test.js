@@ -36,20 +36,7 @@ describe('Middleware Test', () => {
       .set('Authorization', 'Bearer Go')
       .set('Accept', 'application/json')
       .expect(200, async (err, res) => {
-        // console.log(await lastOne(QUEUE_NAME))
         assert.strictEqual((await lastOne(QUEUE_NAME)).level, 'info')
-        done()
-      })
-    })
-  it('should add the username pokemon to the data', (done) => {
-    request
-      .post(`/api/ping`)
-      .set('Authorization', 'Bearer Go')
-      .set('Accept', 'application/json')
-      .send({ username: 'Pokemon'})
-      .expect(200, async (err, res) => {
-        // console.log(await lastOne(QUEUE_NAME))
-        assert.strictEqual((await lastOne(QUEUE_NAME)).metadata.username, 'Pokemon')
         done()
       })
     })

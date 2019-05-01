@@ -4,10 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.getToken = getToken;
-exports.default = rolesRequiredMiddleware;
+exports.rolesRequiredMiddleware = rolesRequiredMiddleware;
 exports.loggerMiddleware = loggerMiddleware;
 
-var _config = _interopRequireDefault(require("config"));
+var _chalk = _interopRequireDefault(require("chalk"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36,35 +36,35 @@ function getToken(_ref) {
 // foundRole ? next() : ctx.throw(403, 'You are not Authorized')
 
 
-function rolesRequiredMiddleware(_x, _x2) {
-  return _rolesRequiredMiddleware.apply(this, arguments);
-}
+function rolesRequiredMiddleware() {
+  let credentials = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  const token = credentials.token;
+  return (
+    /*#__PURE__*/
+    function () {
+      var _ref2 = _asyncToGenerator(function* (ctx, next) {
+        try {
+          const userToken = getToken(ctx);
+          if (!userToken) ctx.throw(401);
 
-function _rolesRequiredMiddleware() {
-  _rolesRequiredMiddleware = _asyncToGenerator(function* (ctx, next) {
-    try {
-      const _config$get = _config.default.get('credentials'),
-            token = _config$get.token;
+          if (token && userToken !== token) {
+            ctx.user = {
+              token: token
+            };
+            ctx.throw(403, 'You are not Authorized');
+          }
 
-      const userToken = getToken(ctx);
-      if (!userToken) ctx.throw(401);
+          return next();
+        } catch (err) {
+          ctx.throw(403, 'You are not Authorized');
+        }
+      });
 
-      if (userToken !== token) {
-        ctx.user = {
-          token: token
-        };
-        ctx.throw(403, 'You are not Authorized');
-      }
-
-      return next();
-    } catch (err) {
-      //Logger.error(err)
-      ctx.throw(403, 'You are not Authorized');
-    }
-
-    return undefined;
-  });
-  return _rolesRequiredMiddleware.apply(this, arguments);
+      return function (_x, _x2) {
+        return _ref2.apply(this, arguments);
+      };
+    }()
+  );
 }
 
 function loggerMiddleware(Logger) {
@@ -72,21 +72,26 @@ function loggerMiddleware(Logger) {
   return (
     /*#__PURE__*/
     function () {
-      var _ref2 = _asyncToGenerator(function* (ctx, next) {
+      var _ref3 = _asyncToGenerator(function* (ctx, next) {
         const start = new Date();
         yield next();
         const ms = new Date() - start;
         const bypassError = !!errorIgnoreLevels.find(status => ctx.status === status);
         const hasError = ctx.status >= 400 && !bypassError;
-        if (hasError) Logger.error("".concat(ctx.request.origin, " ").concat(ctx.method, " ").concat(ctx.status, " ").concat(ctx.request.path, " "), _objectSpread({}, ctx.request.body, {
+        const message = "".concat(ctx.request.origin, " ").concat(_chalk.default['magentaBright'](ctx.method), " ").concat(_chalk.default['blueBright'](ctx.status), " ").concat(_chalk.default['yellowBright'](ctx.request.url));
+        const payload = {
+          url: ctx.request.url,
+          ip: ctx.request.ip,
+          query: _objectSpread({}, ctx.query),
+          body: _objectSpread({}, ctx.request.body),
+          userAgent: ctx.request.header['user-agent'],
           ms: ms
-        }));else Logger.log("".concat(ctx.request.origin, " ").concat(ctx.method, " ").concat(ctx.status, " ").concat(ctx.request.path, " "), _objectSpread({}, ctx.request.body, {
-          ms: ms
-        }));
+        };
+        if (hasError) Logger.error(message, payload);else Logger.log(message, payload);
       });
 
       return function (_x3, _x4) {
-        return _ref2.apply(this, arguments);
+        return _ref3.apply(this, arguments);
       };
     }()
   );

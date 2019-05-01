@@ -24,29 +24,28 @@ const Router = require('koa-router')
 const bodyParser = require('koa-bodyparser')
 const moment = require('moment')
 
-const config  = {
-  hostIp : 127.0.0.1,
-  appName: queue,
-  timezone: America/Los_Angeles,
-  hostname: localhost,
-  useWebsockets: true,
+const config = {
+  hostIp : '127.0.0.1',
+  appName: 'queue',
+  timezone: 'America/Los_Angeles',
+  hostname: 'localhost',
   errorIgnoreLevels: [401, 403],
-  transports:[
-  {
+  transports:[{
     filename: './info.log',
     format: 'txt'
-  },{
+    },{
       filename: './error.log',
       format: 'txt'
     }]
 }
+
 
 const dbs = {
   client: redisClient, // for the queue`
   publisher: redisPublisher, // for the stream`
 }
 
-const LoggerUtil = LoggerUtil.init(config)
+const LoggerUtil = LoggerUtil.init(config, dbs)
 export const Logger = LoggerUtil.init(config, dbs)
 
 const app = new Koa()

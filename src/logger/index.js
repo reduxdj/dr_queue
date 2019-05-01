@@ -12,43 +12,48 @@ export const COLORS = {
   magentaBright :'magentaBright',
   whiteBright: 'whiteBright'
 }
+export const colorFormatter = winston.format.colorize({
+  all:true
+})
 
+export const labelFormatter = winston.format.label({
+  label: 'console-logger'
+})
+/*eslint-disable */
+export const printFormatter = winston.format.printf(
+  ({metadata = {}, env = {}, label, level, hostIp, hostname, appName, timestamp, message, timezone}, ...info) =>
+    ` ${env}:${chalk[COLORS.gray](hostname)}:${appName}:${hostIp}:${level} UTC: ${chalk[COLORS.magentaBright](moment(timestamp))} ${timezone}: ${chalk[COLORS.yellowBright](moment(info.timestamp).tz(timezone).format('hh:mm a'))} ${chalk[COLORS.whiteBright](message)} ${chalk[COLORS.gray](JSON.stringify({env, hostIp, appName, timestamp, ...info, ...(metadata && typeof metadata === 'object' ? metadata : {metadata})}))}`
+)
+
+/*eslint-enable */
 const alignColorsAndTime = winston.format.combine(
-    winston.format.colorize({
-      all:true
-    }),
-    winston.format.label({
-      label: 'console-logger'
-    }),
-    /*eslint-disable */
-    winston.format.printf(
-      ({metadata = {}, env = {}, label, level, hostIp, hostname, appName, timestamp, message, timezone}, ...info) =>
-        ` ${env}:${chalk[COLORS.gray](hostname)}:${appName}:${hostIp}:${level} UTC: ${chalk[COLORS.magentaBright](moment(timestamp))} ${timezone}: ${chalk[COLORS.yellowBright](moment(info.timestamp).tz(timezone).format('hh:mm a'))} ${chalk[COLORS.whiteBright](message)} ${JSON.stringify({env, hostIp, appName, timestamp, ...info, ...(metadata && typeof metadata === 'object' ? metadata : {metadata})})}`
-
-    )
-    /*eslint-enable */
+  colorFormatter,
+  labelFormatter,
+  printFormatter
 )
 
 function createTransport({filename, level}) {
   return new winston.transports.File({filename, level})
 }
 
-function createLogger(transports = []) {
+function createLogger(transports = [], ...formatters) {
   return winston.createLogger({
     level: "info",
     transports: (transports ? transports.map(createTransport) : [
       new winston.transports.File({ filename: 'error.log', level: 'error' }),
       new winston.transports.File({ filename: 'info.log', level: 'info' }),
     ]).concat(new (winston.transports.Console)({
-      format: winston.format.combine(winston.format.colorize(), alignColorsAndTime)
+      format: formatters.length > 0
+        ? winston.format.combine(...formatters)
+        : winston.format.combine(alignColorsAndTime)
     })),
   })
 }
 let logger
 
 export class Logger {
-  constructor({env, appName, timezone, hostIp, hostname, errorIgnoreLevels = [], transports}, redisConnections = {}) {
-    logger = createLogger(transports)
+  constructor({env, appName, timezone, hostIp, hostname, errorIgnoreLevels = [], transports}, redisConnections = {}, ...formatters) {
+    logger = createLogger(transports, ...formatters)
     this.env = env || 'dev'
     this.appName = appName
     this.timezone = timezone
@@ -65,8 +70,9 @@ export class Logger {
       this.client = client
     }
   }
-  static getLogger(config = {}, redisConnections = {}) {
-    return new Logger(config, redisConnections)
+
+  static getLogger(config = {}, redisConnections = {}, ...formatters) {
+    return new Logger(config, redisConnections, ...formatters)
   }
   getInoreLevels() {
     return this.errorIgnoreLevels
@@ -123,7 +129,6 @@ export class Logger {
     if (publisher) {
       setPublisher(publisher)
       this.publisher = publisher
-
     }
     if (client) {
       setClient(client)
@@ -132,6 +137,6 @@ export class Logger {
   }
 }
 export default Logger
-export const getLogger = (config, redisConnections) => {
-  return new Logger(config, redisConnections)
+export const getLogger = (config, redisConnections, ...formatters) => {
+  return new Logger(config, redisConnections, ...formatters)
 }

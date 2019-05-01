@@ -2,7 +2,6 @@ import Router from 'koa-router'
 import {
   publish
 } from '../redis/db'
-import rolesRequired from '../middleware'
 
 const api = 'publisher'
 const router = new Router()
@@ -10,7 +9,7 @@ const router = new Router()
 router.prefix(`/api/${api}`)
 
 router.post('/:channel',
-(ctx, next) => rolesRequired(ctx, next, 'admin', 'api'), async (ctx) => {
+(ctx, next) => async (ctx) => {
   try {
   const paths = (ctx.params.channel || '').split(':')
   const [env, appName, resourceName, resourceKey, ...extraPaths] = paths

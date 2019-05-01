@@ -25,7 +25,13 @@ const isServer = _process.argv.find(item => item.includes('--server'));
 
 if (isServer) (0, _server.start)().then(_server.startServer);
 const Logger = {
-  init: (config, redisConnections) => (0, _logger.getLogger)(config, redisConnections),
+  init: function init(config, redisConnections) {
+    for (var _len = arguments.length, formatters = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+      formatters[_key - 2] = arguments[_key];
+    }
+
+    return (0, _logger.getLogger)(config, redisConnections, ...formatters);
+  },
   setRedisConnections: (_ref) => {
     let client = _ref.client,
         publisher = _ref.publisher;
@@ -34,7 +40,10 @@ const Logger = {
       publisher: publisher
     });
   },
-  middleware: _middleware.loggerMiddleware
+  middleware: _middleware.loggerMiddleware,
+  colorFormatter: _logger.colorFormatter,
+  labelFormatter: _logger.labelFormatter,
+  printFormatter: _logger.printFormatter
 };
 exports.Logger = Logger;
 const Redis = {

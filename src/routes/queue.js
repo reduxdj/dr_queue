@@ -15,15 +15,13 @@ import {
   pop,
 } from '../redis/db'
 import {logger} from '../server'
-import rolesRequired from '../middleware'
 
 const api = 'queue'
 const router = new Router()
 
 router.prefix(`/api/${api}`)
 
-router.post('/:queueName/reset',
-(ctx, next) => rolesRequired(ctx, next, 'admin', 'api'), async (ctx) => {
+router.post('/:queueName/reset', async (ctx) => {
   try {
     ctx.body = {
       ok: true,
@@ -35,8 +33,7 @@ router.post('/:queueName/reset',
   }
 })
 
-router.get('/:queueName/length',
-(ctx, next) => rolesRequired(ctx, next, 'admin', 'api'), async (ctx) => {
+router.get('/:queueName/length', async (ctx) => {
   try {
     ctx.body = { ok: true,
       data: await length(ctx.params.queueName)
@@ -47,8 +44,7 @@ router.get('/:queueName/length',
   }
 })
 
-router.post('/:queueName/pop',
-(ctx, next) => rolesRequired(ctx, next, 'admin', 'api'), async (ctx) => {
+router.post('/:queueName/pop', async (ctx) => {
   try {
     ctx.body = {
       ok: true,
@@ -61,7 +57,7 @@ router.post('/:queueName/pop',
 })
 
 router.post('/:queueName/pop_left',
-(ctx, next) => rolesRequired(ctx, next, 'admin', 'api'), async (ctx) => {
+(ctx, next) => async (ctx) => {
   try {
     ctx.body = {
       ok: true,
@@ -73,8 +69,7 @@ router.post('/:queueName/pop_left',
   }
 })
 
-router.post('/:queueName/pop_right',
-(ctx, next) => rolesRequired(ctx, next, 'admin', 'api'), async (ctx) => {
+router.post('/:queueName/pop_right', async (ctx) => {
   try {
     ctx.body = {
       ok: true,
@@ -86,8 +81,7 @@ router.post('/:queueName/pop_right',
   }
 })
 
-router.get('/:queueName/last',
-(ctx, next) => rolesRequired(ctx, next, 'admin', 'api'), async (ctx) => {
+router.get('/:queueName/last', async (ctx) => {
   try {
     ctx.body = { ok: true,
       data: await hasNext(ctx.params.queueName)
@@ -101,7 +95,7 @@ router.get('/:queueName/last',
 })
 
 router.get('/:queueName/first',
-(ctx, next) => rolesRequired(ctx, next, 'admin', 'api'), async (ctx) => {
+(ctx, next) => async (ctx) => {
   try {
     ctx.body = { ok: true,
       data: await hasNext(ctx.params.queueName)
@@ -115,7 +109,7 @@ router.get('/:queueName/first',
 })
 
 router.get('/:queueName/first/:count',
-(ctx, next) => rolesRequired(ctx, next, 'admin', 'api'), async (ctx) => {
+(ctx, next) => async (ctx) => {
   try {
     ctx.body = { ok: true,
       data: await hasNext(ctx.params.queueName)
@@ -128,8 +122,7 @@ router.get('/:queueName/first/:count',
   }
 })
 
-router.get('/:queueName/last/:count',
-(ctx, next) => rolesRequired(ctx, next, 'admin', 'api'), async (ctx) => {
+router.get('/:queueName/last/:count', async (ctx) => {
   try {
     ctx.body = { ok: true,
       data: await hasNext(ctx.params.queueName)
@@ -142,8 +135,7 @@ router.get('/:queueName/last/:count',
   }
 })
 
-router.post('/:queueName/push',
-(ctx, next) => rolesRequired(ctx, next, 'admin', 'api'), async (ctx) => {
+router.post('/:queueName/push', async (ctx) => {
   try {
     ctx.body = { ok: true,
       data: await push(ctx.params.queueName, ctx.request.body)
@@ -154,8 +146,7 @@ router.post('/:queueName/push',
   }
 })
 
-router.post('/:queueName/push_left',
-(ctx, next) => rolesRequired(ctx, next, 'admin', 'api'), async (ctx) => {
+router.post('/:queueName/push_left', async (ctx) => {
   try {
     ctx.body = { ok: true,
       data: await pushLeft(ctx.params.queueName, ctx.request.body)
@@ -166,8 +157,7 @@ router.post('/:queueName/push_left',
   }
 })
 
-router.post('/:queueName/push_right',
-(ctx, next) => rolesRequired(ctx, next, 'admin', 'api'), async (ctx) => {
+router.post('/:queueName/push_right', async (ctx) => {
   try {
     ctx.body = { ok: true,
       data: await pushRight(ctx.params.queueName, ctx.request.body)
@@ -179,8 +169,7 @@ router.post('/:queueName/push_right',
 })
 
 
-router.get('/:queueName/range/:start/:stop',
-(ctx, next) => rolesRequired(ctx, next, 'admin', 'api'), async (ctx) => {
+router.get('/:queueName/range/:start/:stop', async (ctx) => {
   try {
     ctx.body = { ok: true,
       data: await sRange(ctx.params.queueName, ctx.params.start, ctx.params.stop)
@@ -192,8 +181,7 @@ router.get('/:queueName/range/:start/:stop',
 })
 
 
-router.get('/:queueName',
-(ctx, next) => rolesRequired(ctx, next, 'admin', 'api'), async (ctx) => {
+router.get('/:queueName', async (ctx) => {
   try {
     ctx.body = {
       ok: true,

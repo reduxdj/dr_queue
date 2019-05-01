@@ -7,10 +7,12 @@ import routing from '../routes'
 import websockify from 'koa-websocket'
 import moment from 'moment'
 import bodyParser from 'koa-bodyparser'
-import {loggerMiddleware} from '../middleware'
+import {loggerMiddleware, rolesRequiredMiddleware} from '../middleware'
 import {dbs} from '../redis/db'
+export {colorFomatter, labelFormatter, printFormatter} from '../logger'
 
 const configEnv = (config && config.has('env') && config.get('env') || {})
+const configCredentials = (config && config.has('credentails') && config.get('credentials') || {})
 
 export const logger = getLogger(configEnv)
 export const upTime = moment().format('MMMM Do YYYY, h:mm:ss a')
@@ -31,7 +33,7 @@ export async function start() {
     ).then((results = []) => {
       results.map(({redisClient, name}) => {
         dbs[name] = redisClient
-        logger.log(`Connection Established to ${name}`)
+        logger.log(`Dr Queue Connection Established to ${name}`)
       })
     }).then(resolve)
   })
@@ -40,9 +42,10 @@ export async function start() {
 export function startServer() {
   logger.log('Starting Server')
   app.use(bodyParser())
+  .use(rolesRequiredMiddleware(configCredentials))
   .use(loggerMiddleware(getLogger(configEnv, dbs)))
   .use(router.allowedMethods())
-    app.listen(port, () => logger.log(`✅ The server is running at ${protocol}://${hostIp}:${port}/`), {meta: 'test'})
+    app.listen(port, () => logger.log(`✅ Dr Queue server is running at ${protocol}://${hostIp}:${port}/`), {meta: 'test'})
   routing(app)
   return app
 }

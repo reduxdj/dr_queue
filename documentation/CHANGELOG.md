@@ -11,7 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed a bug around JSON parsing
 - Fixed an issue with the redis_db pop signature
 
-
 ##### [.0.0.5] - 2019-03-26
 - Fixed an issue where the range command was not giving the results correctly
 - Fixed some documentation typos
@@ -40,3 +39,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Corrected undefined exports
 - Added support for wild card pattern matching for subscription events
 - Moved documentation to documentation folder
+
+##### [.0.1.1] - 2019-04-30
+- Documentation fixes
+
+##### [.0.1.2] - 2019-05-01
+- Added formatters as an optional item to Logger initialization
+- Added tests for logger
+- Added request url, ip and query params to logging functions for Koa middleware

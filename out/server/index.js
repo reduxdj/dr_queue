@@ -5,6 +5,24 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.start = start;
 exports.startServer = startServer;
+Object.defineProperty(exports, "colorFomatter", {
+  enumerable: true,
+  get: function get() {
+    return _logger.colorFomatter;
+  }
+});
+Object.defineProperty(exports, "labelFormatter", {
+  enumerable: true,
+  get: function get() {
+    return _logger.labelFormatter;
+  }
+});
+Object.defineProperty(exports, "printFormatter", {
+  enumerable: true,
+  get: function get() {
+    return _logger.printFormatter;
+  }
+});
 exports.app = exports.upTime = exports.logger = void 0;
 
 var _config = _interopRequireDefault(require("config"));
@@ -36,6 +54,7 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 const configEnv = _config.default && _config.default.has('env') && _config.default.get('env') || {};
+const configCredentials = _config.default && _config.default.has('credentails') && _config.default.get('credentials') || {};
 const logger = (0, _logger.getLogger)(configEnv);
 exports.logger = logger;
 const upTime = (0, _moment.default)().format('MMMM Do YYYY, h:mm:ss a');
@@ -77,7 +96,7 @@ function _start() {
           let redisClient = _ref4.redisClient,
               name = _ref4.name;
           _db.dbs[name] = redisClient;
-          logger.log("Connection Established to ".concat(name));
+          logger.log("Dr Queue Connection Established to ".concat(name));
         });
       }).then(resolve);
     });
@@ -87,8 +106,8 @@ function _start() {
 
 function startServer() {
   logger.log('Starting Server');
-  app.use((0, _koaBodyparser.default)()).use((0, _middleware.loggerMiddleware)((0, _logger.getLogger)(configEnv, _db.dbs))).use(router.allowedMethods());
-  app.listen(port, () => logger.log("\u2705 The server is running at ".concat(protocol, "://").concat(hostIp, ":").concat(port, "/")), {
+  app.use((0, _koaBodyparser.default)()).use((0, _middleware.rolesRequiredMiddleware)(configCredentials)).use((0, _middleware.loggerMiddleware)((0, _logger.getLogger)(configEnv, _db.dbs))).use(router.allowedMethods());
+  app.listen(port, () => logger.log("\u2705 Dr Queue server is running at ".concat(protocol, "://").concat(hostIp, ":").concat(port, "/")), {
     meta: 'test'
   });
   (0, _routes.default)(app);

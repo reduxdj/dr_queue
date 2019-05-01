@@ -11,8 +11,6 @@ var _db = require("../redis/db");
 
 var _server = require("../server");
 
-var _middleware = _interopRequireDefault(require("../middleware"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -22,7 +20,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 const api = 'queue';
 const router = new _koaRouter.default();
 router.prefix("/api/".concat(api));
-router.post('/:queueName/reset', (ctx, next) => (0, _middleware.default)(ctx, next, 'admin', 'api'),
+router.post('/:queueName/reset',
 /*#__PURE__*/
 function () {
   var _ref = _asyncToGenerator(function* (ctx) {
@@ -42,7 +40,7 @@ function () {
     return _ref.apply(this, arguments);
   };
 }());
-router.get('/:queueName/length', (ctx, next) => (0, _middleware.default)(ctx, next, 'admin', 'api'),
+router.get('/:queueName/length',
 /*#__PURE__*/
 function () {
   var _ref2 = _asyncToGenerator(function* (ctx) {
@@ -62,7 +60,7 @@ function () {
     return _ref2.apply(this, arguments);
   };
 }());
-router.post('/:queueName/pop', (ctx, next) => (0, _middleware.default)(ctx, next, 'admin', 'api'),
+router.post('/:queueName/pop',
 /*#__PURE__*/
 function () {
   var _ref3 = _asyncToGenerator(function* (ctx) {
@@ -82,7 +80,7 @@ function () {
     return _ref3.apply(this, arguments);
   };
 }());
-router.post('/:queueName/pop_left', (ctx, next) => (0, _middleware.default)(ctx, next, 'admin', 'api'),
+router.post('/:queueName/pop_left', (ctx, next) =>
 /*#__PURE__*/
 function () {
   var _ref4 = _asyncToGenerator(function* (ctx) {
@@ -102,7 +100,7 @@ function () {
     return _ref4.apply(this, arguments);
   };
 }());
-router.post('/:queueName/pop_right', (ctx, next) => (0, _middleware.default)(ctx, next, 'admin', 'api'),
+router.post('/:queueName/pop_right',
 /*#__PURE__*/
 function () {
   var _ref5 = _asyncToGenerator(function* (ctx) {
@@ -122,7 +120,7 @@ function () {
     return _ref5.apply(this, arguments);
   };
 }());
-router.get('/:queueName/last', (ctx, next) => (0, _middleware.default)(ctx, next, 'admin', 'api'),
+router.get('/:queueName/last',
 /*#__PURE__*/
 function () {
   var _ref6 = _asyncToGenerator(function* (ctx) {
@@ -142,7 +140,7 @@ function () {
     return _ref6.apply(this, arguments);
   };
 }());
-router.get('/:queueName/first', (ctx, next) => (0, _middleware.default)(ctx, next, 'admin', 'api'),
+router.get('/:queueName/first', (ctx, next) =>
 /*#__PURE__*/
 function () {
   var _ref7 = _asyncToGenerator(function* (ctx) {
@@ -162,7 +160,7 @@ function () {
     return _ref7.apply(this, arguments);
   };
 }());
-router.get('/:queueName/first/:count', (ctx, next) => (0, _middleware.default)(ctx, next, 'admin', 'api'),
+router.get('/:queueName/first/:count', (ctx, next) =>
 /*#__PURE__*/
 function () {
   var _ref8 = _asyncToGenerator(function* (ctx) {
@@ -182,7 +180,7 @@ function () {
     return _ref8.apply(this, arguments);
   };
 }());
-router.get('/:queueName/last/:count', (ctx, next) => (0, _middleware.default)(ctx, next, 'admin', 'api'),
+router.get('/:queueName/last/:count',
 /*#__PURE__*/
 function () {
   var _ref9 = _asyncToGenerator(function* (ctx) {
@@ -202,7 +200,7 @@ function () {
     return _ref9.apply(this, arguments);
   };
 }());
-router.post('/:queueName/push', (ctx, next) => (0, _middleware.default)(ctx, next, 'admin', 'api'),
+router.post('/:queueName/push',
 /*#__PURE__*/
 function () {
   var _ref10 = _asyncToGenerator(function* (ctx) {
@@ -222,7 +220,7 @@ function () {
     return _ref10.apply(this, arguments);
   };
 }());
-router.post('/:queueName/push_left', (ctx, next) => (0, _middleware.default)(ctx, next, 'admin', 'api'),
+router.post('/:queueName/push_left',
 /*#__PURE__*/
 function () {
   var _ref11 = _asyncToGenerator(function* (ctx) {
@@ -242,7 +240,7 @@ function () {
     return _ref11.apply(this, arguments);
   };
 }());
-router.post('/:queueName/push_right', (ctx, next) => (0, _middleware.default)(ctx, next, 'admin', 'api'),
+router.post('/:queueName/push_right',
 /*#__PURE__*/
 function () {
   var _ref12 = _asyncToGenerator(function* (ctx) {
@@ -262,7 +260,7 @@ function () {
     return _ref12.apply(this, arguments);
   };
 }());
-router.get('/:queueName/range/:start/:stop', (ctx, next) => (0, _middleware.default)(ctx, next, 'admin', 'api'),
+router.get('/:queueName/range/:start/:stop',
 /*#__PURE__*/
 function () {
   var _ref13 = _asyncToGenerator(function* (ctx) {
@@ -282,7 +280,7 @@ function () {
     return _ref13.apply(this, arguments);
   };
 }());
-router.get('/:queueName', (ctx, next) => (0, _middleware.default)(ctx, next, 'admin', 'api'),
+router.get('/:queueName',
 /*#__PURE__*/
 function () {
   var _ref14 = _asyncToGenerator(function* (ctx) {
