@@ -15,11 +15,13 @@
 <b>.0.1.1</b> - Documentation link fixes
 <b>.0.1.2</b> - Create proper function wrapper for rolesRequired middleware
 <b>.0.1.3</b> - Added middleware filter - Documentation clarification
+<b>.0.1.4</b> - Fixed build - forgot to npm install and npm run build
+<b>.0.1.5</b> - Removed console.log
 
 #### Future
-<b>.0.1.4</b> - (June 2019) Create CLI tool, add jsDoc and some visual infographics to documentation
-<b>.0.1.5</b> - Add Elastic stream support to collate messages to elastic  
-<b>.0.1.6</b> - Adding support for Express and other server middlewares  
-<b>.0.1.7</b> - (Summer 2019) Add ApolloClient interface middleware See: [Apollo Client](https://github.com/apollographql/apollo-client)  
-<b>.0.1.8</b> - (June 2019) Create a web interface to display, filter and search log messages (as a separate companion app)  
-<b>.0.2.0</b> - (Fall 2019) Official Beta Release  
+<b>.0.2.0</b> - (June 2019) Create CLI tool, add jsDoc and some visual diagrams and illustrations to documentation
+<b>.0.3.0</b> - Add Elastic stream support to collate messages to elastic  
+<b>.0.3.5</b> - Adding support for Express and other server middlewares  
+<b>.0.4.0</b> - (Summer 2019) Add ApolloClient interface middleware See: [Apollo Client](https://github.com/apollographql/apollo-client)  
+<b>.0.5.0</b> - (June 2019) Create a web interface to display, filter and search log messages (as a separate companion app)  
+<b>.0.6.0</b> - (Fall 2019) Official Beta Release  
