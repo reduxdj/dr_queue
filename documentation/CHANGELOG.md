@@ -53,3 +53,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added middleware filter with omitFields for configuration
 - Added stripAnsi to log message before publishing
 - Changed messageReceived parameter to be original log message
+
+##### [.0.1.4] - 2019-05-03
+- Forgot to build module

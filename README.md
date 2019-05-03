@@ -12,7 +12,7 @@ Simply POST your payload on to your queue, then serialization will make your obj
  Create a list, by posting a JSON body into a REST end point
 
 ```
-/api/queue/<b>queueName
+/api/queue/queueName
 ```
 
 #### Or use Dr Queue à la carte
