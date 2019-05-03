@@ -48,6 +48,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added tests for logger
 - Added request url, ip and query params to logging functions for Koa middleware
 
-##### [.0.1.3] - 2019-05-02
+##### [.0.1.3] - 2019-05-03
 - Rewrote pusub documentation
-- Added middleware filter
+- Added middleware filter with omitFields for configuration
+- Added stripAnsi to log message before publishing
+- Changed messageReceived parameter to be original log message
