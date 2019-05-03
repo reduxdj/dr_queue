@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-
+import {omit} from 'lodash'
 
 export function getToken({ request: { header }, query: { token }} ) {
   if (header && header.authorization) {
@@ -34,16 +34,18 @@ export function rolesRequiredMiddleware(credentials = {}) {
   }
 }
 
-export function loggerMiddleware(Logger) {
+export function loggerMiddleware(Logger, filters) {
   const errorIgnoreLevels = Logger.getInoreLevels()
+  const omitFields = Logger.getOmitFields()
   return async (ctx, next, ...args) => {
     const start = new Date()
     await next()
     const ms = new Date() - start
     const bypassError = !!(errorIgnoreLevels.find((status) => ctx.status === status))
     const hasError = ctx.status >= 400 && !bypassError
-    const message = `${ctx.request.origin} ${chalk['magentaBright'](ctx.method)} ${chalk['blueBright'](ctx.status)} ${chalk['yellowBright'](ctx.request.url)}`
-    const payload = { url: ctx.request.url, ip: ctx.request.ip, query: {...ctx.query}, body: {...ctx.request.body}, userAgent: ctx.request.header['user-agent'], ms}
+    const body = omit(ctx.request.body || {}, ...omitFields)
+    const message = `${ctx.request.origin} ${chalk['magentaBright'](ctx.method)} ${chalk['blueBright'](ctx.status)} ${chalk['yellow'](ctx.request.url)} ${chalk['white'](ctx.request.ip)}`
+    const payload = { url: ctx.request.url, ip: ctx.request.ip, query: {...ctx.query}, body, userAgent: ctx.request.header['user-agent'], ms, createdAt: start}
     if (hasError)
       Logger.error(message, payload)
     else
