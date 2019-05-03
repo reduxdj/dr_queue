@@ -47,3 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added formatters as an optional item to Logger initialization
 - Added tests for logger
 - Added request url, ip and query params to logging functions for Koa middleware
+
+##### [.0.1.3] - 2019-05-02
+- Rewrote pusub documentation
+- Added middleware filter

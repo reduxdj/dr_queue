@@ -1,13 +1,30 @@
 ## Middleware
 Middleware for Koa ^2.0
 
-### Guidelines
+### Logger Middleware
 
 Using Dr Queue as middleware is an option if you already have a webserver and want to connect the Redis transport to your Redis connections (or if you just want to send formatted log files to text files without Redis), that option is available too.
 
-### Getting Started
+The included logger middleware is included and is easy to modify or supply your own. The logger Middleware returns a Koa middleware function and looks like this.
 
-To initialize the middleware logger, create an instance with a configuration object
+```js
+export function loggerMiddleware(Logger) {
+  const errorIgnoreLevels = Logger.getInoreLevels()
+  return async (ctx, next, ...args) => {
+    const start = new Date()
+    await next()
+    const ms = new Date() - start
+    const bypassError = !!(errorIgnoreLevels.find((status) => ctx.status === status))
+    const hasError = ctx.status >= 400 && !bypassError
+    const message = `${ctx.request.origin} ${chalk['magentaBright'](ctx.method)} ${chalk['blueBright'](ctx.status)} ${chalk['yellowBright'](ctx.request.url)}`
+    const payload = { ip: ctx.request.ip, query: {...ctx.query}, body: {...ctx.request.body}, userAgent: ctx.request.header['user-agent'], ms}
+    if (hasError)
+      Logger.error(message, payload)
+    else
+      Logger.log(message, payload)
+  }
+}
+```
 
 ##### Example:
 ```js
@@ -77,8 +94,7 @@ app.use(Logger)
 ```
 
 
-If you need to do any filtering on your logger, or add or remove request properties like to remove passwords or other sensitive information, write a middleware function similar to the one like this one
-for Koa
+If you need to do any filtering on your logger, or add or remove request properties like to remove passwords or other sensitive information, write a middleware function similar to the one like this one for Koa.
 
 ```js
 export function loggerMiddleware(Logger) {

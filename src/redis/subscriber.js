@@ -16,7 +16,7 @@ export default async function listen(channel) {
     redisClient
     .on('pmessage', (channel, name, message) => {
       const data = JSON.parse(message)
-      Logger.logSilent(`messageReceived`, data) // will not publish messages back to itself
+      Logger.logSilent(data.message, data) // will not publish messages back to itself
       resolve(data)
     })
     redisClient.psubscribe(channel)

@@ -9,6 +9,8 @@ exports.loggerMiddleware = loggerMiddleware;
 
 var _chalk = _interopRequireDefault(require("chalk"));
 
+var _lodash = require("lodash");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
@@ -67,8 +69,10 @@ function rolesRequiredMiddleware() {
   );
 }
 
-function loggerMiddleware(Logger) {
+function loggerMiddleware(Logger, filters) {
+  console.log(Logger);
   const errorIgnoreLevels = Logger.getInoreLevels();
+  const omitFields = Logger.getOmitFields();
   return (
     /*#__PURE__*/
     function () {
@@ -78,14 +82,16 @@ function loggerMiddleware(Logger) {
         const ms = new Date() - start;
         const bypassError = !!errorIgnoreLevels.find(status => ctx.status === status);
         const hasError = ctx.status >= 400 && !bypassError;
+        const body = (0, _lodash.omit)(ctx.request.body || {}, ...omitFields);
         const message = "".concat(ctx.request.origin, " ").concat(_chalk.default['magentaBright'](ctx.method), " ").concat(_chalk.default['blueBright'](ctx.status), " ").concat(_chalk.default['yellowBright'](ctx.request.url));
         const payload = {
           url: ctx.request.url,
           ip: ctx.request.ip,
           query: _objectSpread({}, ctx.query),
-          body: _objectSpread({}, ctx.request.body),
+          body: body,
           userAgent: ctx.request.header['user-agent'],
-          ms: ms
+          ms: ms,
+          createdAt: start
         };
         if (hasError) Logger.error(message, payload);else Logger.log(message, payload);
       });

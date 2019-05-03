@@ -23,11 +23,12 @@
   },
   "env": {
     "hostIp" : "127.0.0.1",
-    "appName": "queue",
+    "appName": "log",
     "timezone": "America/Los_Angeles",
     "hostname": "localhost",
     "useWebsockets": true,
     "errorIgnoreLevels": [401, 403],
+    "omitFields" : ["token", "creditCardNumber", "password"],
     "transports":[
       {
       "filename": "./info.log",

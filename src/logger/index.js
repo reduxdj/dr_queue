@@ -2,6 +2,7 @@ import winston from 'winston'
 import moment from 'moment-timezone'
 import chalk from 'chalk'
 import {dbs, publish, push, setPublisher, setClient} from '../redis/db'
+import stripAnsi from 'strip-ansi'
 
 export const COLORS = {
   gray: 'gray',
@@ -52,7 +53,7 @@ function createLogger(transports = [], ...formatters) {
 let logger
 
 export class Logger {
-  constructor({env, appName, timezone, hostIp, hostname, errorIgnoreLevels = [], transports}, redisConnections = {}, ...formatters) {
+  constructor({env, appName, timezone, hostIp, hostname, omitFields, errorIgnoreLevels = [], transports}, redisConnections = {}, ...formatters) {
     logger = createLogger(transports, ...formatters)
     this.env = env || 'dev'
     this.appName = appName
@@ -60,6 +61,7 @@ export class Logger {
     this.hostIp = process.env.HOST_IP || hostIp
     this.hostname = process.env.HOSTNAME || hostname
     this.errorIgnoreLevels = errorIgnoreLevels
+    this.omitFields = omitFields
     const {publisher, client} = redisConnections
     if (publisher) {
       dbs[publisher] = publisher
@@ -76,6 +78,9 @@ export class Logger {
   }
   getInoreLevels() {
     return this.errorIgnoreLevels
+  }
+  getOmitFields() {
+    return this.getOmitFields
   }
   logSilent (message = '', metadata = {}) {
     const payload = {
@@ -101,9 +106,9 @@ export class Logger {
     metadata}
     logger.log(payload)
     if (this.publisher)
-      publish(`${this.env}:${this.appName}`, payload)
+      publish(`${this.env}:${this.appName}`, { ...payload, message: stripAnsi(message) })
     if (this.client)
-      push(`${this.env}:${this.appName}`, payload)
+      push(`${this.env}:${this.appName}`, { ...payload, message: stripAnsi(message) })
   }
   info(message = '', metadata ={}) {
     this.log(message, metadata)
@@ -121,9 +126,9 @@ export class Logger {
     }
     logger.error(payload)
     if (this.publisher)
-      publish(`${this.env}:${this.appName}`, payload)
+      publish(`${this.env}:${this.appName}`, { ...payload, message: stripAnsi(message) })
     if (this.client)
-      push(`${this.env}:${this.appName}`, payload)
+      push(`${this.env}:${this.appName}`, { ...payload, message: stripAnsi(message) })
   }
   setRedisConnections({client, publisher}) {
     if (publisher) {

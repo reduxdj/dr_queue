@@ -51,7 +51,7 @@ function _listen() {
         redisClient.on('pmessage', (channel, name, message) => {
           const data = JSON.parse(message);
 
-          _index.logger.logSilent("messageReceived", data); // will not publish messages back to itself
+          _index.logger.logSilent(data.message, data); // will not publish messages back to itself
 
 
           resolve(data);

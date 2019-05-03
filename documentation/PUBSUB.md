@@ -1,103 +1,104 @@
 ## PubSub
-Publish and Subscribe to a Redis channel. Publishing to channels can be achieved by using the Dr. Queue's Webserver and using the REST endpoint to publish a JSON body. You can also directly import the publish command if you choose not to use the server.
-
-##### Example (using included webserver):
-
-http://localhost:8000/api/publisher/<channel>
-
-##### Channel Path
-The channel is broken down into a string of parameters, for example, to publish to a user resource, ID of 123, you would formulate the message channel name like this:
-
-###### prod:webapp:users:123
-This is a scope example at the application level, the channel name is derived from the first key, which is a the environment followed by the app name, and any number of colon separated paths that you desire.
+Publisher and Subscribers allow you to send and receive data, in realtime. Publishing to channels can be achieved by using the Dr Queue's the REST endpoints, in the included Dr Queue Koa webserver or by importing the  methods directly into your app/script, à la carte style.
 
 
-##### Start Your Subscriber:
-To activate your subscriber script, start this script to listen to events
+### Publishing
 
-```sh
-CHANNEL=prod:webapp npm run subscriber
+##### Channel Paths
+
+The channel paradigm is broken down into a simple string of parameters. For convenience, and easy filtering, the keys of the path are rolled up into the payload object.
+
 ```
 
-##### Example (using included webserver):
-
-You might want to send a payload of IPs that the user 123 has logged in from recently.
-
-```sh
-prod:users:123 npm run subscriber
 ```
+
+The keys are: env, appName, resourceName and resourceKey, and any additional keys are captured into a variable called extraPaths and shuttled in the payload too.
+
+```
+<envName>:<appName>:<...optionalResourceName>:<...optionalResourceKey>
+```
+
+To publish to a user resource, at ID 123, you would formulate the message channel name would like this:
+
+```js
+prod:webapp
+```
+
+This is example would be scoped to the environment production, for all webapp listeners.
+
+##### Using the webserver:
+
+For instance, you might want to send a payload of IPs that the user with ID 123 has logged in from recently, maybe to control content per user, similar to how Spotify stops playback of music opened from multiple devices at the same time.
 
 ```sh
 curl -X POST \
   http://localhost:8000/api/publisher/prod:iflipd:users:123 \
   -H 'Authorization: Bearer Go' \
   -H 'Content-Type: application/json' \
-  -H 'Postman-Token: 31a17ac8-d83c-4b8a-b6e2-98ea06256b70' \
   -H 'cache-control: no-cache' \
   -d '{
 	"ipList": ["193.37.252.62", "193.37.252.50", "193.37.252.119", "104.200.153.73"]
 }'
 ```
-##### Example (a la carte import)
+
+##### Imports à la carte:
 
 ```js
 import {Redis} from 'dr_queue'
-const {push, setClient} = Redis
-
-//in your connection handler
-//
-setClient(yourRedsClient)
-publish(channelName, {payload: 'some object'})
+Redis.setPublisher(redisPublisherConnection)
+// connect to redis
+Redis.publish('prod:iflipd:users:123', {hello: 'there'})
 ```
-The keys of the path name are rolled up into the payload to make the handling of logic simplified, so you can subscribe to one app level channel message and handle the specific logic under one Redis subscription, everything beyond the first 4 keys: env, appName, resourceKey and resourceName, are captured into an array of extraPaths that you can access in the message object payload if needed.
+
+### Subscriptions
+
+Subscriptions are easy to setup. The listen function takes one argument, the channel name and returns a promise. The payload of the resolved promise has any data along with the path name keys.
+
+##### To get started:
+
+First, configure your subscriber to connect to your environment correctly and create an async function to handle the payload.
+
+```js
+import {Redis} from 'dr_queue'
+
+Redis.setSubcriber(redisSubscriberConnection)
+// connect to redis
+
+async function start() {
+  const payload = await listen('prod:webapp')
+}
+```
 
 #### Wildcards
 
-Dr. Queue automatically supports wildcards in channel names, so you can subscribe to app level events. For instance, to broadcast to all thee users in your app, you
-might want to publish a message like this.
+Dr Queue automatically supports wildcards in channel names, making it easy subscribe to app level events. For instance, to broadcast to all users in your app, you might want to publish a general message like this:
 
-##### Start your subscriber
-
-```sh
-CHANNEL=prod:webapp:users:* npm run subscriber
-```
 
 ##### Post a payload to your user (included webserver)
+```sh
 curl -X POST \
   http://localhost:8000/api/publisher/prod:iflipd:users:* \
   -H 'Authorization: Bearer Go' \
   -H 'Content-Type: application/json' \
-  -H 'Postman-Token: 31a17ac8-d83c-4b8a-b6e2-98ea06256b70' \
   -H 'cache-control: no-cache' \
   -d '{
 	"ipList": ["193.37.252.62", "193.37.252.50", "193.37.252.119", "104.200.153.73"]
 }'
-
-##### Example (a la carte import)
-
-```js
-import {Redis} from 'dr_queue'
-const {push, setClient} = Redis
-
-//in your connection handler
-//
-setClient(yourRedsClient)
-publish(channelName, {payload: 'some object'})
 ```
 
-Under the hood, Dr. Queue automatically uses <b>psubscribe</b> and <b>pmessage</b> to allow
-for both wildcards and regular channels
+#### To see example of how streaming with log messages
+
+To See a simple working test, modify your publisher and subscriber connection in the /config/default.json script.
 
 
-##### Another Example (using included test)
-###### In a console window, type:
+<b>In a console window, type:</b>
 
 ```sh
-npm start
+CHANNEL=dev:queue npm run subscriber
 ```
 
-###### Open another console window, type:
+<b>Open another console window, type:</b>
 
 ```sh
-npm run subscriber dev:queue
+npm run test:grep Middleware
 ```

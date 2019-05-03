@@ -13,6 +13,8 @@ var _chalk = _interopRequireDefault(require("chalk"));
 
 var _db = require("../redis/db");
 
+var _stripAnsi = _interopRequireDefault(require("strip-ansi"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
@@ -117,6 +119,7 @@ class Logger {
         timezone = _ref3.timezone,
         hostIp = _ref3.hostIp,
         hostname = _ref3.hostname,
+        omitFields = _ref3.omitFields,
         _ref3$errorIgnoreLeve = _ref3.errorIgnoreLevels,
         errorIgnoreLevels = _ref3$errorIgnoreLeve === void 0 ? [] : _ref3$errorIgnoreLeve,
         transports = _ref3.transports;
@@ -133,6 +136,7 @@ class Logger {
     this.hostIp = process.env.HOST_IP || hostIp;
     this.hostname = process.env.HOSTNAME || hostname;
     this.errorIgnoreLevels = errorIgnoreLevels;
+    this.omitFields = omitFields;
     const publisher = redisConnections.publisher,
           client = redisConnections.client;
 
@@ -160,6 +164,10 @@ class Logger {
 
   getInoreLevels() {
     return this.errorIgnoreLevels;
+  }
+
+  getOmitFields() {
+    return this.getOmitFields;
   }
 
   logSilent() {
@@ -192,8 +200,12 @@ class Logger {
       metadata: metadata
     };
     logger.log(payload);
-    if (this.publisher) (0, _db.publish)("".concat(this.env, ":").concat(this.appName), payload);
-    if (this.client) (0, _db.push)("".concat(this.env, ":").concat(this.appName), payload);
+    if (this.publisher) (0, _db.publish)("".concat(this.env, ":").concat(this.appName), _objectSpread({}, payload, {
+      message: (0, _stripAnsi.default)(message)
+    }));
+    if (this.client) (0, _db.push)("".concat(this.env, ":").concat(this.appName), _objectSpread({}, payload, {
+      message: (0, _stripAnsi.default)(message)
+    }));
   }
 
   info() {
@@ -216,8 +228,12 @@ class Logger {
       metadata: metadata
     };
     logger.error(payload);
-    if (this.publisher) (0, _db.publish)("".concat(this.env, ":").concat(this.appName), payload);
-    if (this.client) (0, _db.push)("".concat(this.env, ":").concat(this.appName), payload);
+    if (this.publisher) (0, _db.publish)("".concat(this.env, ":").concat(this.appName), _objectSpread({}, payload, {
+      message: (0, _stripAnsi.default)(message)
+    }));
+    if (this.client) (0, _db.push)("".concat(this.env, ":").concat(this.appName), _objectSpread({}, payload, {
+      message: (0, _stripAnsi.default)(message)
+    }));
   }
 
   setRedisConnections(_ref4) {
