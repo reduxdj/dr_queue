@@ -58,7 +58,7 @@ describe('Middleware Test', () => {
           .set('Accept', 'application/json')
           .send({ username: 'Pokemon', password: 'test'})
           .expect(200, async (err, res) => {
-            assert(!await lastOne(QUEUE_NAME).password)
+            assert.strictEqual(await lastOne(QUEUE_NAME).password, undefined)
             done()
           })
         })

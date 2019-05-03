@@ -28,6 +28,7 @@
     "hostname": "localhost",
     "useWebsockets": true,
     "errorIgnoreLevels": [401, 403],
+    "omitFields": ["password", "token", "creditCardNumber", "street1"],
     "transports":[
       {
       "filename": "./info.log",
