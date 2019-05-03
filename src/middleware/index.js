@@ -35,7 +35,6 @@ export function rolesRequiredMiddleware(credentials = {}) {
 }
 
 export function loggerMiddleware(Logger, filters) {
-  console.log(Logger)
   const errorIgnoreLevels = Logger.getInoreLevels()
   const omitFields = Logger.getOmitFields()
   return async (ctx, next, ...args) => {
@@ -45,7 +44,7 @@ export function loggerMiddleware(Logger, filters) {
     const bypassError = !!(errorIgnoreLevels.find((status) => ctx.status === status))
     const hasError = ctx.status >= 400 && !bypassError
     const body = omit(ctx.request.body || {}, ...omitFields)
-    const message = `${ctx.request.origin} ${chalk['magentaBright'](ctx.method)} ${chalk['blueBright'](ctx.status)} ${chalk['yellowBright'](ctx.request.url)}`
+    const message = `${ctx.request.origin} ${chalk['magentaBright'](ctx.method)} ${chalk['blueBright'](ctx.status)} ${chalk['yellow'](ctx.request.url)} ${chalk['white'](ctx.request.ip)}`
     const payload = { url: ctx.request.url, ip: ctx.request.ip, query: {...ctx.query}, body, userAgent: ctx.request.header['user-agent'], ms, createdAt: start}
     if (hasError)
       Logger.error(message, payload)

@@ -70,7 +70,6 @@ function rolesRequiredMiddleware() {
 }
 
 function loggerMiddleware(Logger, filters) {
-  console.log(Logger);
   const errorIgnoreLevels = Logger.getInoreLevels();
   const omitFields = Logger.getOmitFields();
   return (
@@ -83,7 +82,7 @@ function loggerMiddleware(Logger, filters) {
         const bypassError = !!errorIgnoreLevels.find(status => ctx.status === status);
         const hasError = ctx.status >= 400 && !bypassError;
         const body = (0, _lodash.omit)(ctx.request.body || {}, ...omitFields);
-        const message = "".concat(ctx.request.origin, " ").concat(_chalk.default['magentaBright'](ctx.method), " ").concat(_chalk.default['blueBright'](ctx.status), " ").concat(_chalk.default['yellowBright'](ctx.request.url));
+        const message = "".concat(ctx.request.origin, " ").concat(_chalk.default['magentaBright'](ctx.method), " ").concat(_chalk.default['blueBright'](ctx.status), " ").concat(_chalk.default['yellow'](ctx.request.url), " ").concat(_chalk.default['white'](ctx.request.ip));
         const payload = {
           url: ctx.request.url,
           ip: ctx.request.ip,

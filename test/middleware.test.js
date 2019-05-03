@@ -51,4 +51,15 @@ describe('Middleware Test', () => {
           done()
         })
       })
+      it('should have filterd a password out of the logging payload', (done) => {
+        request
+          .post(`/api/pong`)
+          .set('Authorization', 'Bearer Go')
+          .set('Accept', 'application/json')
+          .send({ username: 'Pokemon', password: 'test'})
+          .expect(200, async (err, res) => {
+            assert(!await lastOne(QUEUE_NAME).password)
+            done()
+          })
+        })
 })

@@ -53,7 +53,7 @@ function createLogger(transports = [], ...formatters) {
 let logger
 
 export class Logger {
-  constructor({env, appName, timezone, hostIp, hostname, omitFields, errorIgnoreLevels = [], transports}, redisConnections = {}, ...formatters) {
+  constructor({env, appName, timezone, hostIp, hostname, omitFields = [], errorIgnoreLevels = [], transports}, redisConnections = {}, ...formatters) {
     logger = createLogger(transports, ...formatters)
     this.env = env || 'dev'
     this.appName = appName
@@ -80,7 +80,7 @@ export class Logger {
     return this.errorIgnoreLevels
   }
   getOmitFields() {
-    return this.getOmitFields
+    return this.omitFields
   }
   logSilent (message = '', metadata = {}) {
     const payload = {

@@ -23,7 +23,7 @@
   },
   "env": {
     "hostIp" : "127.0.0.1",
-    "appName": "log",
+    "appName": "queue",
     "timezone": "America/Los_Angeles",
     "hostname": "localhost",
     "useWebsockets": true,

@@ -119,7 +119,8 @@ class Logger {
         timezone = _ref3.timezone,
         hostIp = _ref3.hostIp,
         hostname = _ref3.hostname,
-        omitFields = _ref3.omitFields,
+        _ref3$omitFields = _ref3.omitFields,
+        omitFields = _ref3$omitFields === void 0 ? [] : _ref3$omitFields,
         _ref3$errorIgnoreLeve = _ref3.errorIgnoreLevels,
         errorIgnoreLevels = _ref3$errorIgnoreLeve === void 0 ? [] : _ref3$errorIgnoreLeve,
         transports = _ref3.transports;
@@ -167,7 +168,7 @@ class Logger {
   }
 
   getOmitFields() {
-    return this.getOmitFields;
+    return this.omitFields;
   }
 
   logSilent() {
